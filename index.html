@@ -345,31 +345,15 @@
 
       
         
-          
-            <h2 id="在-Linux-下安装-Redis"><a href="#在-Linux-下安装-Redis" class="headerlink" title="在 Linux 下安装 Redis"></a>在 Linux 下安装 Redis</h2><p>Redis 能够兼容绝大部分的 <code>POSIX 系统</code>, 如 Linux, OS X, 以及 *BSD 等, 其中比较典型的是 Linux 操作系统.</p>
-<p>在 Linux 安装软件通常有两种方法, 第一种是通过各个操作系统的软件管理软件进行安装, 例如 CentOS 有 <code>yum</code> 管理工具, Ubuntu 有 <code>apt</code> 管理工具.<br>&lt;! – more –&gt;<br>由于 Redis 的更新速度较快, 而这些管理工具不一定能更新到最新的版本, 同时前面提到 Redis 的安装本身不是很复杂, 所以一般推荐使用第二种方式: <code>源码安装</code></p>
-<pre><code>1. 下载 Redis 指定版本的源码压缩包到当前目录
-    wget -c http://download.redis.io/releases/redis-3.0.7.tar.gz
-2. 解压缩 Redis 源码包
-    tar -xf redis-3.0.7.tar.gz
-3. 建立一个 redis 目录的软连接
-    ln -s redis-3.0.7 redis
-4. 进入 redis 目录
-    cd redis
-5. 编译(编译之前确保操作系统已经安装 gcc )
-    make
-6. 安装
-    make install</code></pre><p>有两点需要注意: </p>
-<ul>
-<li>第三步中建立了一个 redis 目录的<code>软连接</code>, 这样做是为了不把 redis 目录固定在指定版本上, 有利于 Redis 版本升级, 算是安装软件的一种好习惯.</li>
-<li>第六步中的安装是将 Redis 的相关运行文件放到 <code>/usr/local/bin</code> 下, 这样就可以再任意目录下执行 Redis 命令.</li>
-</ul>
-<h2 id="在-Windows-下安装-Redis"><a href="#在-Windows-下安装-Redis" class="headerlink" title="在 Windows 下安装 Redis"></a>在 Windows 下安装 Redis</h2><p>Redis 的官方并不支持微软的 Windows 操作系统, 但是 Redis 作为一款优秀的开源技术吸引到了微软公司的注意, 微软公司的开源技术组在 GitHub 上维护了一个 Redis 的分支: <a href="https://github.com/MSOpenTech/redis" target="_blank" rel="noopener">Redis的GitHub分支</a></p>
-<blockquote>
-<p>ps: 虽然 redis 可以在 windows 下安装, 但是基于现如今 Docker 技术的飞速发展, 建议在 Docker 环境下搭建 redis 环境</p>
-</blockquote>
-
-          
+          <h2 id="在-Linux-下安装-Redis"><a href="#在-Linux-下安装-Redis" class="headerlink" title="在 Linux 下安装 Redis"></a>在 Linux 下安装 Redis</h2><p>Redis 能够兼容绝大部分的 <code>POSIX 系统</code>, 如 Linux, OS X, 以及 *BSD 等, 其中比较典型的是 Linux 操作系统.</p>
+<p>在 Linux 安装软件通常有两种方法, 第一种是通过各个操作系统的软件管理软件进行安装, 例如 CentOS 有 <code>yum</code> 管理工具, Ubuntu 有 <code>apt</code> 管理工具. </p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/20/Redis的安装/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
