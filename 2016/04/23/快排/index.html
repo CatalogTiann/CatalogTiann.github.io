@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Redis,启动Redis,停止Redis,Redis-Server,Redis-cli,">
+  <meta name="keywords" content="快排,快速排序,分治思想,算法,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="Redis 的相关文件Redis 安装之后, src 和 /usr/local/bin 目录下多了几个以 Redis 开头的可执行文件, 我们称之为 Redis Shell, 这些可执行文件可以做很多事情, 例如可以启动和停止 Redis, 可以检测和修复 Redis 的持久化文件, 还可以检测 Redis 的性能.">
-<meta name="keywords" content="Redis,启动Redis,停止Redis,Redis-Server,Redis-cli">
+<meta name="description" content="简介 好写的排序算法里最快的 快的排序算法里最好写的  思路分治思想 分而治之, 把一个复杂的问题分解成很多规模较小的子问题, 然后解决这些子问题, 把解决的子问题合并起来, 大问题就解决了">
+<meta name="keywords" content="快排,快速排序,分治思想,算法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis的启动与停止">
-<meta property="og:url" content="http://yoursite.com/2018/01/20/Redis的启动与停止/index.html">
+<meta property="og:title" content="快排">
+<meta property="og:url" content="http://yoursite.com/2016/04/23/快排/index.html">
 <meta property="og:site_name" content="Catalog_Tiann&#39;s blog.">
-<meta property="og:description" content="Redis 的相关文件Redis 安装之后, src 和 /usr/local/bin 目录下多了几个以 Redis 开头的可执行文件, 我们称之为 Redis Shell, 这些可执行文件可以做很多事情, 例如可以启动和停止 Redis, 可以检测和修复 Redis 的持久化文件, 还可以检测 Redis 的性能.">
+<meta property="og:description" content="简介 好写的排序算法里最快的 快的排序算法里最好写的  思路分治思想 分而治之, 把一个复杂的问题分解成很多规模较小的子问题, 然后解决这些子问题, 把解决的子问题合并起来, 大问题就解决了">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-23T00:38:12.324Z">
+<meta property="og:updated_time" content="2019-07-23T02:29:57.009Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis的启动与停止">
-<meta name="twitter:description" content="Redis 的相关文件Redis 安装之后, src 和 /usr/local/bin 目录下多了几个以 Redis 开头的可执行文件, 我们称之为 Redis Shell, 这些可执行文件可以做很多事情, 例如可以启动和停止 Redis, 可以检测和修复 Redis 的持久化文件, 还可以检测 Redis 的性能.">
+<meta name="twitter:title" content="快排">
+<meta name="twitter:description" content="简介 好写的排序算法里最快的 快的排序算法里最好写的  思路分治思想 分而治之, 把一个复杂的问题分解成很多规模较小的子问题, 然后解决这些子问题, 把解决的子问题合并起来, 大问题就解决了">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/20/Redis的启动与停止/">
+  <link rel="canonical" href="http://yoursite.com/2016/04/23/快排/">
 
 
 
 
 
-  <title>Redis的启动与停止 | Catalog_Tiann's blog.</title>
+  <title>快排 | Catalog_Tiann's blog.</title>
   
 
 
@@ -253,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/20/Redis的启动与停止/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/23/快排/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Catalog Spri">
@@ -270,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Redis的启动与停止</h1>
+          <h1 class="post-title" itemprop="name headline">快排</h1>
         
 
         <div class="post-meta">
@@ -282,8 +282,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-20T21:53:31+08:00">
-                2018-01-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-23T10:25:00+08:00">
+                2016-04-23
               </time>
             
 
@@ -305,8 +305,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index">
-                    <span itemprop="name">Redis</span>
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
                   </a>
                 </span>
 
@@ -323,8 +323,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/20/Redis的启动与停止/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/01/20/Redis的启动与停止/" itemprop="commentsCount"></span>
+                <a href="/2016/04/23/快排/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2016/04/23/快排/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -352,106 +352,27 @@
       
 
       
-        <h2 id="Redis-的相关文件"><a href="#Redis-的相关文件" class="headerlink" title="Redis 的相关文件"></a>Redis 的相关文件</h2><p>Redis 安装之后, <code>src</code> 和 <code>/usr/local/bin</code> 目录下多了几个以 Redis 开头的可执行文件, 我们称之为 <code>Redis Shell</code>, 这些可执行文件可以做很多事情, 例如可以启动和停止 Redis, 可以检测和修复 Redis 的持久化文件, 还可以检测 Redis 的性能.</p>
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ul>
+<li>好写的排序算法里最快的</li>
+<li>快的排序算法里最好写的</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p><strong>分治思想</strong></p>
+<p>分而治之, 把一个复杂的问题分解成很多规模较小的子问题, 然后解决这些子问题, 把解决的子问题合并起来, 大问题就解决了</p>
 <a id="more"></a>
-<table>
-<thead>
-<tr>
-<th>可执行文件</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>redis-server</td>
-<td>启动 Redis</td>
-</tr>
-<tr>
-<td>redis-cli</td>
-<td>redis 命令行客户端</td>
-</tr>
-<tr>
-<td>redis-benchmark</td>
-<td>redis 基准测试工具</td>
-</tr>
-<tr>
-<td>redis-check-aof</td>
-<td>redis AOF 持久化文件检测和修复工具</td>
-</tr>
-<tr>
-<td>redis-check-dump</td>
-<td>redis RDB 持久化文件检测和修复工具</td>
-</tr>
-<tr>
-<td>redis-sentinel</td>
-<td>启动 Redis Sentinel</td>
-</tr>
-</tbody></table>
-<h2 id="Redis-启动的三种方式"><a href="#Redis-启动的三种方式" class="headerlink" title="Redis 启动的三种方式"></a>Redis 启动的三种方式</h2><p>有三种启动 Redis 的方法: <code>默认配置</code>, <code>运行配置</code>, <code>配置文件启动</code></p>
-<h3 id="默认配置"><a href="#默认配置" class="headerlink" title="默认配置"></a>默认配置</h3><p>这种方法会使用 Redis 的默认配置来启动. 执行 <code>redis-server</code> 后, 会看到相关日志的输出, 其中可以看到版本信息, 端口号等.</p>
-<p>因为直接启动无法自定义配置, 所以这种方式是不会在生产环境中使用的</p>
-<h3 id="运行启动"><a href="#运行启动" class="headerlink" title="运行启动"></a>运行启动</h3><p><code>redis-server</code> 加上要修改的配置名和值(可以是多对), 没有设置的配置将使用默认配置</p>
-<blockquote>
-<p>ps: redis-server –configKey1 configValue1 –configKey2 configValue2</p>
-</blockquote>
-<p>虽然运行配置可以自定义配置, 但是如果需要修改的配置较多或者希望将配置保存到文件中, 不建议使用这种方式</p>
-<h3 id="配置文件启动"><a href="#配置文件启动" class="headerlink" title="配置文件启动"></a>配置文件启动</h3><p>将配置写到指定文件里, 例如我们将配置写到 <code>/opt/redis/redis.conf</code> 中, 那么只需要执行如下命令即可启动 Redis :</p>
-<blockquote>
-<p>ps: redis-server /opt/redis/redis.conf</p>
-</blockquote>
-<p>Redis 有60+配置, 这里罗列了一些比较常用的配置</p>
-<table>
-<thead>
-<tr>
-<th>配置名称</th>
-<th>配置说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>port</td>
-<td>端口号</td>
-</tr>
-<tr>
-<td>logfile</td>
-<td>日志文件</td>
-</tr>
-<tr>
-<td>dir</td>
-<td>Redis工作目录</td>
-</tr>
-<tr>
-<td>daemonize</td>
-<td>是否以守护进程的方式启动 Redis</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>ps: 有时我们会将 redis 做多实例, 一般是将 redis.conf 配置文件复制多份, 修改部分配置, 然后通过使用不同配置文件启动来达到多实例的目的.</p>
-</blockquote>
-<h2 id="Redis命令行客户端"><a href="#Redis命令行客户端" class="headerlink" title="Redis命令行客户端"></a>Redis命令行客户端</h2><ul>
-<li>交互式方式</li>
-</ul>
-<p>通过 <code>redis-cli -h [host] -p [port]</code> 的方式连接到 Redis 服务, 之后所有的操作都是通过交互的方式实现, 不需要再执行 <code>redis-cli</code> 了</p>
-<ul>
-<li>命令方式</li>
-</ul>
-<p>通过 <code>redis-cli -h [host] -p [port] {command}</code> 就可以直接得到命令的返回结果</p>
-<p>注意: </p>
-<ul>
-<li>如果没有指定 <code>-h</code> 参数, 默认连接 <code>127.0.0.1</code>; 如果没有指定 <code>-p</code> 参数, 默认连接 <code>6379</code> 端口.</li>
-<li>redis-cli 是学习 Redis 的重要工具</li>
-</ul>
-<h2 id="停止-Redis-服务"><a href="#停止-Redis-服务" class="headerlink" title="停止 Redis 服务"></a>停止 Redis 服务</h2><p>Redis 提供了 <code>shutdown</code> 命令来停止 Redis 服务, 例如要停掉 <code>127.0.0.1</code> 上 <code>6379</code> 端口的 Redis 服务, 可以执行如下操作.</p>
-<blockquote>
-<p>redis-cli shutdown</p>
-</blockquote>
-<p>这里有三点需要注意: </p>
-<ul>
-<li>Redis 关闭的过程: 断开与客户端的连接, 持久化文件生成, 是一种相对优雅的关闭方式.</li>
-<li>除了可以通过 shutdown 命令关闭 Redis 服务以外, 还可以通过 kill 进程号的方式关闭 Redis, 但是不要粗暴地使用 <code>kill -9</code> 强制杀死 Redis 服务, 这样不但不会做持久化操作, 还会造成缓冲区等资源不能被优雅关闭, 极端情况会造成 AOF 和复制丢失数据的情况</li>
-<li>shutdown 还有一个参数, 代表是否在关闭 Redis 前, 生成持久化文件</li>
-</ul>
-<blockquote>
-<p>redis-cli shutdown nosave|save</p>
-</blockquote>
+<p>取一个元素 p(一般取第一个或最后一个), 使 p 元素归位</p>
+<p>归位: 列表被 p 元素分为两部分, 左边都比 p 小, 右边都比 p 大</p>
+<p>递归完成排序</p>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><ol>
+<li>设置两个指针, 从列表两端开始</li>
+<li>设置一个归位元素(取第一个元素为归位元素)</li>
+<li>取右指针所在位置元素与归位元素进行对比</li>
+<li>如果右指针元素大于归位元素, 右指针左移; 如果右指针元素小于归位元素, 将右指针元素放到左指针所在位置</li>
+<li>重复执行, 直到左右指针重合</li>
+</ol>
+<p>归位元素左边都比归位元素小, 右边都比归位元素大</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">partition</span><span class="params">(li, left, right)</span>:</span></span><br><span class="line">    <span class="comment"># 将归位元素找一个临时变量保存一下, 因为等会儿会被覆盖掉</span></span><br><span class="line">    tmp = li[left]</span><br><span class="line">    <span class="keyword">while</span> left &lt; right:</span><br><span class="line">        <span class="comment"># 判断右指针元素与归位元素大小</span></span><br><span class="line">        <span class="keyword">while</span> left &lt; right <span class="keyword">and</span> tmp &lt;= li[right]:</span><br><span class="line">            <span class="comment"># 右指针移动</span></span><br><span class="line">            right -= <span class="number">1</span></span><br><span class="line">        <span class="comment"># 当归位元素大于右指针所在元素时, 交换两个元素位置</span></span><br><span class="line">        li[left] = li[right]</span><br><span class="line">        <span class="comment"># 判断左指针元素与归位元素大小</span></span><br><span class="line">        <span class="keyword">while</span> left &lt; right <span class="keyword">and</span> tmp &gt;= li[left]:</span><br><span class="line">            <span class="comment"># 左指针移动</span></span><br><span class="line">            left += <span class="number">1</span></span><br><span class="line">        <span class="comment"># 当归位元素小于左指针所在元素时, 交换两个元素位置</span></span><br><span class="line">        li[right] = li[left]</span><br><span class="line">    <span class="comment"># 此时左右指针重合, 将归位元素放在这里</span></span><br><span class="line">    li[left] = tmp</span><br><span class="line">    <span class="keyword">return</span> left</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quick_sort</span><span class="params">(li, left, right)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> left &lt; right:</span><br><span class="line">        mid = partition(li, left, right)</span><br><span class="line">        quick_sort(li, left, mid - <span class="number">1</span>)</span><br><span class="line">        quick_sort(li, mid, right)</span><br></pre></td></tr></table></figure>
+
+<h2 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h2><p>设置第一个元素为归位元素的话, 必须先移动右指针, 因为左边第一个数已经拿出来了, 是一个”空位”, 所以要先移动右指针填充这个”空位”</p>
 
       
     </div>
@@ -498,15 +419,13 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Redis/" rel="tag"># Redis</a>
+            <a href="/tags/快排/" rel="tag"># 快排</a>
           
-            <a href="/tags/启动Redis/" rel="tag"># 启动Redis</a>
+            <a href="/tags/快速排序/" rel="tag"># 快速排序</a>
           
-            <a href="/tags/停止Redis/" rel="tag"># 停止Redis</a>
+            <a href="/tags/分治思想/" rel="tag"># 分治思想</a>
           
-            <a href="/tags/Redis-Server/" rel="tag"># Redis-Server</a>
-          
-            <a href="/tags/Redis-cli/" rel="tag"># Redis-cli</a>
+            <a href="/tags/算法/" rel="tag"># 算法</a>
           
         </div>
       
@@ -519,15 +438,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/20/Redis的安装/" rel="next" title="Redis的安装">
-                <i class="fa fa-chevron-left"></i> Redis的安装
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/14/Python实现SMTP发送邮件/" rel="prev" title="Python实现SMTP发送邮件">
+                Python实现SMTP发送邮件 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -712,7 +631,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-的相关文件"><span class="nav-number">1.</span> <span class="nav-text">Redis 的相关文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-启动的三种方式"><span class="nav-number">2.</span> <span class="nav-text">Redis 启动的三种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#默认配置"><span class="nav-number">2.1.</span> <span class="nav-text">默认配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行启动"><span class="nav-number">2.2.</span> <span class="nav-text">运行启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件启动"><span class="nav-number">2.3.</span> <span class="nav-text">配置文件启动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis命令行客户端"><span class="nav-number">3.</span> <span class="nav-text">Redis命令行客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止-Redis-服务"><span class="nav-number">4.</span> <span class="nav-text">停止 Redis 服务</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思路"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体实现"><span class="nav-number">3.</span> <span class="nav-text">具体实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码"><span class="nav-number">4.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#踩过的坑"><span class="nav-number">5.</span> <span class="nav-text">踩过的坑</span></a></li></ol></div>
             
 
           </div>
