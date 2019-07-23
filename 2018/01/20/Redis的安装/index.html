@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Redis,NoSQL,Redis的安装,非关系型数据库,">
+  <meta name="keywords" content="Redis,NoSQL,非关系型数据库,Redis的安装,">
 
 
 
@@ -80,7 +80,7 @@
 
 
 <meta name="description" content="在 Linux 下安装 RedisRedis 能够兼容绝大部分的 POSIX 系统, 如 Linux, OS X, 以及 *BSD 等, 其中比较典型的是 Linux 操作系统. 在 Linux 安装软件通常有两种方法, 第一种是通过各个操作系统的软件管理软件进行安装, 例如 CentOS 有 yum 管理工具, Ubuntu 有 apt 管理工具.">
-<meta name="keywords" content="Redis,NoSQL,Redis的安装,非关系型数据库">
+<meta name="keywords" content="Redis,NoSQL,非关系型数据库,Redis的安装">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis的安装">
 <meta property="og:url" content="http://yoursite.com/2018/01/20/Redis的安装/index.html">
@@ -318,6 +318,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/20/Redis的安装/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/01/20/Redis的安装/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -416,9 +426,9 @@
           
             <a href="/tags/NoSQL/" rel="tag"># NoSQL</a>
           
-            <a href="/tags/Redis的安装/" rel="tag"># Redis的安装</a>
-          
             <a href="/tags/非关系型数据库/" rel="tag"># 非关系型数据库</a>
+          
+            <a href="/tags/Redis的安装/" rel="tag"># Redis的安装</a>
           
         </div>
       
@@ -467,6 +477,41 @@
 
 
           
+
+  
+<div onclick="showGitment()" id="gitment_title" class="gitment_title">显示 Gitment 评论</div>
+  <div id="container" style="display:none"></div>
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+  <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+  <script>
+  const myTheme = {
+    render(state, instance) {
+      const container = document.createElement('div');
+      container.lang = "en-US";
+      container.className = 'gitment-container gitment-root-container';
+      container.appendChild(instance.renderHeader(state, instance));
+      container.appendChild(instance.renderEditor(state, instance));
+      container.appendChild(instance.renderComments(state, instance));
+      container.appendChild(instance.renderFooter(state, instance));
+      return container;
+    }
+  }
+  function showGitment() {
+    $("#gitment_title").attr("style", "display:none");
+    $("#container").attr("style", "").addClass("gitment_container");
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      theme: myTheme,
+      owner: '',
+      repo: '',
+      oauth: {
+        client_id: '',
+        client_secret: ''
+      }
+    });
+    gitment.render('container');
+  }
+  </script>
 
   
 
