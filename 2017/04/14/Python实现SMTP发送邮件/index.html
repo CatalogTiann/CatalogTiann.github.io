@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,SMTP,Python发邮件,SMTP协议,smtplib,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="使用方法SMTP（Simple Mail Transfer Protocol）即简单邮件传输协议, 它是一组用于由源地址到目的地址传送邮件的规则, 由它来控制信件的中转方式. Python 内置对 SMTP 的支持, 可以发送纯文本邮件, HTML邮件以及带附件的邮件. Python 对 SMTP 支持有 smtplib 和 email 两个模块，email 负责构造邮件，smtplib 负责发送">
+<meta name="keywords" content="Python,SMTP,Python发邮件,SMTP协议,smtplib">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python实现SMTP发送邮件">
+<meta property="og:url" content="http://yoursite.com/2017/04/14/Python实现SMTP发送邮件/index.html">
+<meta property="og:site_name" content="Catalog_Tiann&#39;s blog.">
+<meta property="og:description" content="使用方法SMTP（Simple Mail Transfer Protocol）即简单邮件传输协议, 它是一组用于由源地址到目的地址传送邮件的规则, 由它来控制信件的中转方式. Python 内置对 SMTP 的支持, 可以发送纯文本邮件, HTML邮件以及带附件的邮件. Python 对 SMTP 支持有 smtplib 和 email 两个模块，email 负责构造邮件，smtplib 负责发送">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-23T01:45:34.894Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python实现SMTP发送邮件">
+<meta name="twitter:description" content="使用方法SMTP（Simple Mail Transfer Protocol）即简单邮件传输协议, 它是一组用于由源地址到目的地址传送邮件的规则, 由它来控制信件的中转方式. Python 内置对 SMTP 的支持, 可以发送纯文本邮件, HTML邮件以及带附件的邮件. Python 对 SMTP 支持有 smtplib 和 email 两个模块，email 负责构造邮件，smtplib 负责发送">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/14/Python实现SMTP发送邮件/">
+
+
+
+
+
+  <title>Python实现SMTP发送邮件 | Catalog_Tiann's blog.</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Catalog_Tiann's blog.</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">日常干货分享</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/14/Python实现SMTP发送邮件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Catalog Spri">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Catalog_Tiann's blog.">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python实现SMTP发送邮件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-14T09:20:50+08:00">
+                2017-04-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/04/14/Python实现SMTP发送邮件/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2017/04/14/Python实现SMTP发送邮件/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>SMTP（<code>Simple Mail Transfer Protocol</code>）即简单邮件传输协议, 它是一组用于由源地址到目的地址传送邮件的规则, 由它来控制信件的中转方式.</p>
+<p>Python 内置对 SMTP 的支持, 可以发送纯文本邮件, HTML邮件以及带附件的邮件.</p>
+<p>Python 对 SMTP 支持有 <code>smtplib</code> 和 <code>email</code> 两个模块，email 负责构造邮件，smtplib 负责发送邮件。</p>
+<a id="more"></a>
+<h3 id="构造一个简单的纯文本邮件内容"><a href="#构造一个简单的纯文本邮件内容" class="headerlink" title="构造一个简单的纯文本邮件内容"></a>构造一个简单的纯文本邮件内容</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span> MIMEText</span><br><span class="line"> </span><br><span class="line">msg = MIMEText(<span class="string">'test'</span>, <span class="string">'plain'</span>, <span class="string">'utf-8'</span>)</span><br><span class="line"><span class="comment"># 三个参数：</span></span><br><span class="line"><span class="comment"># 第一个为文本内容</span></span><br><span class="line"><span class="comment"># 第二个 plain 设置文本格式</span></span><br><span class="line"><span class="comment"># 第三个 utf-8 设置编码</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Python-创建-SMTP-对象"><a href="#Python-创建-SMTP-对象" class="headerlink" title="Python 创建 SMTP 对象"></a>Python 创建 SMTP 对象</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> smtplib</span><br><span class="line"> </span><br><span class="line">smtp_obj = smtplib.SMTP([host [, port [, local_hostname]]])</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 参数说明：</span></span><br><span class="line"><span class="comment"># host: SMTP 服务器主机. 你可以指定主机的ip地址或者域名如: runoob.com, 这个是可选参数.</span></span><br><span class="line"><span class="comment"># port: 如果你提供了 host 参数, 你需要指定 SMTP 服务使用的端口号, 一般情况下 SMTP 端口号为25.</span></span><br><span class="line"><span class="comment"># local_hostname: 如果 SMTP 在你的本机上, 你只需要指定服务器地址为 localhost 即可.</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ps: 使用华为云服务时, 因为服务器默认25端口是关闭的, 所以会导致邮件发送失败, 需要联系华为云客服开通25端口.</p>
+</blockquote>
+<h3 id="Python-SMTP-对象使用-sendmail-方法发送邮件"><a href="#Python-SMTP-对象使用-sendmail-方法发送邮件" class="headerlink" title="Python SMTP 对象使用 sendmail 方法发送邮件"></a>Python SMTP 对象使用 sendmail 方法发送邮件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SMTP.sendmail(from_addr, to_addrs, msg[, mail_options, rcpt_options])</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 参数说明: </span></span><br><span class="line"><span class="comment"># from_addr: 邮件发送者地址.</span></span><br><span class="line"><span class="comment"># to_addrs: 字符串列表, 邮件发送地址.</span></span><br><span class="line"><span class="comment"># msg: 发送消息</span></span><br></pre></td></tr></table></figure>
+
+<p>这里要注意一下第三个参数, msg 是字符串, 表示邮件. 我们知道邮件一般由标题, 发信人, 收件人, 邮件内容, 附件等构成, 发送邮件的时候, 要注意 msg 的格式. 这个格式就是 smtp 协议中定义的格式.</p>
+<h2 id="写一个小-DEMO"><a href="#写一个小-DEMO" class="headerlink" title="写一个小 DEMO"></a>写一个小 DEMO</h2><h3 id="发送纯文本邮件"><a href="#发送纯文本邮件" class="headerlink" title="发送纯文本邮件"></a>发送纯文本邮件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 简单纯文本邮件的发送</span></span><br><span class="line"><span class="keyword">import</span> smtplib</span><br><span class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span> MIMEText</span><br><span class="line"><span class="keyword">from</span> email.header <span class="keyword">import</span> Header</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 发件人邮箱地址</span></span><br><span class="line">sender = <span class="string">'526772254@qq.com'</span></span><br><span class="line"><span class="comment"># 接收人邮箱地址, 可以设置多个</span></span><br><span class="line">receivers = [<span class="string">'526772254@qq.com'</span>]</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 三个参数: 第一个为文本内容, 第二个 plain 设置文本格式, 第三个 utf-8 设置编码</span></span><br><span class="line">message = MIMEText(<span class="string">'Test'</span>, <span class="string">'plain'</span>, <span class="string">'utf-8'</span>)</span><br><span class="line"><span class="comment"># 邮件中展示给收件人的发送者</span></span><br><span class="line">message[<span class="string">'From'</span>] = Header(<span class="string">"xxx"</span>, <span class="string">'utf-8'</span>)</span><br><span class="line"><span class="comment"># 邮件中展示给收件人的接收者</span></span><br><span class="line">message[<span class="string">'To'</span>] = Header(<span class="string">"测试"</span>, <span class="string">'utf-8'</span>)</span><br><span class="line"> </span><br><span class="line">subject = <span class="string">'Python SMTP 邮件测试'</span></span><br><span class="line"><span class="comment"># 设置邮件主题</span></span><br><span class="line">message[<span class="string">'Subject'</span>] = Header(subject, <span class="string">'utf-8'</span>)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="comment"># 两个参数</span></span><br><span class="line">    <span class="comment"># 第一个参数为smtp服务器地址（这里我们使用qq邮箱的smtp服务器)</span></span><br><span class="line">    <span class="comment"># 第二个参数为端口号, 默认为25</span></span><br><span class="line">    smtp = smtplib.SMTP(<span class="string">'smtp.qq.com'</span>, <span class="number">25</span>)</span><br><span class="line">    <span class="comment"># 需要先登录再发送, 第一个参数为登录用户名, 第二个参数为密码</span></span><br><span class="line">    smtp.login(sender, <span class="string">'xxxx'</span>)</span><br><span class="line">    <span class="comment"># 这一句可以打印出和SMTP服务器交互的所有信息</span></span><br><span class="line">    smtp.set_debuglevel(<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 发送邮件</span></span><br><span class="line">    smtp.sendmail(sender, receivers, message.as_string())</span><br><span class="line">    print(<span class="string">"邮件发送成功"</span>)</span><br><span class="line"><span class="keyword">except</span> smtplib.SMTPException <span class="keyword">as</span> e:</span><br><span class="line">    print(<span class="string">"Error: 无法发送邮件\n错误原因：%s"</span> %e)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">-------------------</span><br><span class="line">屏幕输出&gt;&gt;&gt;:</span><br><span class="line">send: <span class="string">'mail FROM:&lt;526772254@qq.com&gt; size=213\r\n'</span></span><br><span class="line">reply: <span class="string">b'250 Ok\r\n'</span></span><br><span class="line">reply: retcode (<span class="number">250</span>); Msg: <span class="string">b'Ok'</span></span><br><span class="line">send: <span class="string">'rcpt TO:&lt;526772254@qq.com&gt;\r\n'</span></span><br><span class="line">reply: <span class="string">b'250 Ok\r\n'</span></span><br><span class="line">reply: retcode (<span class="number">250</span>); Msg: <span class="string">b'Ok'</span></span><br><span class="line">send: <span class="string">'data\r\n'</span></span><br><span class="line">reply: <span class="string">b'354 End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;\r\n'</span></span><br><span class="line">reply: retcode (<span class="number">354</span>); Msg: <span class="string">b'End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;'</span></span><br><span class="line">data: (<span class="number">354</span>, <span class="string">b'End data with &lt;CR&gt;&lt;LF&gt;.&lt;CR&gt;&lt;LF&gt;'</span>)</span><br><span class="line">send: <span class="string">b'Content-Type: text/plain; charset="utf-8"\r\nMIME-Version: 1.0\r\nContent-Transfer-Encoding: base64\r\nFrom: =?utf-8?q?xxx?=\r\nTo: =?utf-8?b?5rWL6K+V?=\r\nSubject: =?utf-8?b?UHl0aG9uIFNNVFAg6YKu5Lu25rWL6K+V?=\r\n\r\nVGVzdA==\r\n.\r\n'</span></span><br><span class="line">reply: <span class="string">b'250 Ok: queued as \r\n'</span></span><br><span class="line">reply: retcode (<span class="number">250</span>); Msg: <span class="string">b'Ok: queued as'</span></span><br><span class="line">data: (<span class="number">250</span>, <span class="string">b'Ok: queued as'</span>)</span><br><span class="line">邮件发送成功</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ps: 这里不是使用qq密码进行登录, 而是使用QQ邮箱授权的第三方密码, 具体申请规则请参考<a href="https://service.mail.qq.com/cgi-bin/help?subtype=1&&id=28&&no=1001256" target="_blank" rel="noopener">QQ邮箱授权码申请</a></p>
+</blockquote>
+<h3 id="发送-HTML-邮件"><a href="#发送-HTML-邮件" class="headerlink" title="发送 HTML 邮件"></a>发送 HTML 邮件</h3><p>我们不仅可以发送纯文本邮件, 还可以发送 html 邮件, 方法很简单, 在构造 <code>MIMEText</code> 对象时, 把 HTML 字符串传进去, 再把第二个参数由 plain 改为 html 即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写前端html/css语言</span></span><br><span class="line">html = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;html&gt;</span></span><br><span class="line"><span class="string">    &lt;body&gt;</span></span><br><span class="line"><span class="string">        &lt;h1&gt;Hello&lt;/h1&gt;</span></span><br><span class="line"><span class="string">        &lt;p style="color:red"&gt;I'm test&lt;/p&gt;</span></span><br><span class="line"><span class="string">        &lt;a href="www.baidu.com"&gt;点我&lt;/a&gt;</span></span><br><span class="line"><span class="string">    &lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"> </span><br><span class="line">message=MIMEText(html, <span class="string">'html'</span>, <span class="string">'utf-8'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>既然能发送html邮件, 那么我们在 html 代码中写入一个 image 标签岂不是可以显示图片了?</p>
+<p>其实不然, 大部分邮件服务商都会自动屏蔽带有外链的图片, 因为不知道这些链接是否指向恶意网站.</p>
+<h3 id="发送带图片的-Email"><a href="#发送带图片的-Email" class="headerlink" title="发送带图片的 Email"></a>发送带图片的 Email</h3><p>我们可以把图片嵌入到邮件正文中, 只需要按照发送附件的方式, 先把邮件作为附件添加进去, 然后, 在 HTML 中通过引用 <code>&lt;image src=&quot;cid:0&quot;&gt;</code> 就可以把附件作为图片嵌入了. 如果有多个图片, 可以给他们一次进行编号, 然后引用不同的 <code>cid:xx</code> 即可.</p>
+<h3 id="发送带附件的-Email"><a href="#发送带附件的-Email" class="headerlink" title="发送带附件的 Email"></a>发送带附件的 Email</h3><p>带附件的邮件可以看做包含若干部分的邮件: 文本和各个附件本身, 所以, 可以构造一个 <code>MIMEMultipart</code> 对象代表邮件本身, 然后往里面加上一个 <code>MIMEText</code> 作为邮件正文, 再继续往里面加上表示附件的 <code>MIMEBase</code> 对象即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> email.mime.multipart <span class="keyword">import</span> MIMEMultipart</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成 Multipart 编码格式的对象</span></span><br><span class="line"><span class="comment"># 学过 http 协议的应该都很清楚, 请求携带数据的编码格式: urlencoded, formdata, json</span></span><br><span class="line"><span class="comment"># multipart 就是制定以 formdata 格式编码，就可以传输文件了</span></span><br><span class="line">message = MIMEMultipart()</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 携带附件的同时传输文本</span></span><br><span class="line">msg.attach(MIMEText(<span class="string">'test'</span>, <span class="string">'plain'</span>, <span class="string">'utf-8'</span>))</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 添加附件就是加上一个 MIMEBase, 从本地读取一个图片:</span></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'/Users/apple/Downloads/test.png'</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="comment"># 设置附件的MIME和文件名，这里是png类型:</span></span><br><span class="line">    mime = MIMEBase(<span class="string">'image'</span>, <span class="string">'png'</span>, filename=<span class="string">'test.png'</span>)</span><br><span class="line">    <span class="comment"># 加上必要的头信息:</span></span><br><span class="line">    mime.add_header(<span class="string">'Content-Disposition'</span>, <span class="string">'attachment'</span>, filename=<span class="string">'test.png'</span>)</span><br><span class="line">    mime.add_header(<span class="string">'Content-ID'</span>, <span class="string">'&lt;0&gt;'</span>)</span><br><span class="line">    mime.add_header(<span class="string">'X-Attachment-Id'</span>, <span class="string">'0'</span>)</span><br><span class="line">    <span class="comment"># 把附件的内容读进来:</span></span><br><span class="line">    mime.set_payload(f.read())</span><br><span class="line">    <span class="comment"># 用Base64编码:</span></span><br><span class="line">    encoders.encode_base64(mime)</span><br><span class="line">    <span class="comment"># 添加到MIMEMultipart:</span></span><br><span class="line">    msg.attach(mime)</span><br></pre></td></tr></table></figure>
+
+<p>使用Python的smtplib发送邮件十分简单, 只要掌握了各种邮件类型的构造方法, 正确设置好邮件头, 就可以顺利发出.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持干货分享, 您的支持将鼓励我持续创作!</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="Catalog Spri 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/uploads/alipay.jpg" alt="Catalog Spri 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/SMTP/" rel="tag"># SMTP</a>
+          
+            <a href="/tags/Python发邮件/" rel="tag"># Python发邮件</a>
+          
+            <a href="/tags/SMTP协议/" rel="tag"># SMTP协议</a>
+          
+            <a href="/tags/smtplib/" rel="tag"># smtplib</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/18/Redis简介/" rel="prev" title="Redis简介">
+                Redis简介 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+<div onclick="showGitment()" id="gitment_title" class="gitment_title">显示 Gitment 评论</div>
+  <div id="container" style="display:none"></div>
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+  <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+  <script>
+  const myTheme = {
+    render(state, instance) {
+      const container = document.createElement('div');
+      container.lang = "en-US";
+      container.className = 'gitment-container gitment-root-container';
+      container.appendChild(instance.renderHeader(state, instance));
+      container.appendChild(instance.renderEditor(state, instance));
+      container.appendChild(instance.renderComments(state, instance));
+      container.appendChild(instance.renderFooter(state, instance));
+      return container;
+    }
+  }
+  function showGitment() {
+    $("#gitment_title").attr("style", "display:none");
+    $("#container").attr("style", "").addClass("gitment_container");
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      theme: myTheme,
+      owner: '',
+      repo: '',
+      oauth: {
+        client_id: '',
+        client_secret: ''
+      }
+    });
+    gitment.render('container');
+  }
+  </script>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="Catalog Spri">
+            
+              <p class="site-author-name" itemprop="name">Catalog Spri</p>
+              <p class="site-description motion-element" itemprop="description">Life is short, you need python!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/CatalogTiann" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renyachunchun@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用方法"><span class="nav-number">1.</span> <span class="nav-text">使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造一个简单的纯文本邮件内容"><span class="nav-number">1.1.</span> <span class="nav-text">构造一个简单的纯文本邮件内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python-创建-SMTP-对象"><span class="nav-number">1.2.</span> <span class="nav-text">Python 创建 SMTP 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python-SMTP-对象使用-sendmail-方法发送邮件"><span class="nav-number">1.3.</span> <span class="nav-text">Python SMTP 对象使用 sendmail 方法发送邮件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写一个小-DEMO"><span class="nav-number">2.</span> <span class="nav-text">写一个小 DEMO</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#发送纯文本邮件"><span class="nav-number">2.1.</span> <span class="nav-text">发送纯文本邮件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送-HTML-邮件"><span class="nav-number">2.2.</span> <span class="nav-text">发送 HTML 邮件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送带图片的-Email"><span class="nav-number">2.3.</span> <span class="nav-text">发送带图片的 Email</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送带附件的-Email"><span class="nav-number">2.4.</span> <span class="nav-text">发送带附件的 Email</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Catalog Spri</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
