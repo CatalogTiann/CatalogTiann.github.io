@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Redis,NoSQL,非关系型数据库,Redis 特性,Redis 优缺点,">
+  <meta name="keywords" content="Redis,启动Redis,停止Redis,Redis-Server,Redis-cli,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="前言Redis 的全称是 Remote Dictionary Server, 主要提供了 5 种数据结构: 字符串, 哈希, 列表, 集合, 有序集合. 同时在字符串的基础上演变出了位图( Bitmaps )和 HyperLogLog 两种神奇的”数据结构”. Redis 是基于键值对的 NoSQL 数据库, 具有高性能, 丰富的数据结构, 持久化, 高可用, 分布式等特性, 同时 Redis 本">
-<meta name="keywords" content="Redis,NoSQL,非关系型数据库,Redis 特性,Redis 优缺点">
+<meta name="description" content="Redis 的相关文件Redis 安装之后, src 和 /usr/local/bin 目录下多了几个以 Redis 开头的可执行文件, 我们称之为 Redis Shell, 这些可执行文件可以做很多事情, 例如可以启动和停止 Redis, 可以检测和修复 Redis 的持久化文件, 还可以检测 Redis 的性能.">
+<meta name="keywords" content="Redis,启动Redis,停止Redis,Redis-Server,Redis-cli">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis简介">
-<meta property="og:url" content="http://yoursite.com/2018/01/18/Redis简介/index.html">
+<meta property="og:title" content="Redis的启动与停止">
+<meta property="og:url" content="http://yoursite.com/2018/01/20/Redis的启动与停止/index.html">
 <meta property="og:site_name" content="Catalog_Tiann&#39;s blog.">
-<meta property="og:description" content="前言Redis 的全称是 Remote Dictionary Server, 主要提供了 5 种数据结构: 字符串, 哈希, 列表, 集合, 有序集合. 同时在字符串的基础上演变出了位图( Bitmaps )和 HyperLogLog 两种神奇的”数据结构”. Redis 是基于键值对的 NoSQL 数据库, 具有高性能, 丰富的数据结构, 持久化, 高可用, 分布式等特性, 同时 Redis 本">
+<meta property="og:description" content="Redis 的相关文件Redis 安装之后, src 和 /usr/local/bin 目录下多了几个以 Redis 开头的可执行文件, 我们称之为 Redis Shell, 这些可执行文件可以做很多事情, 例如可以启动和停止 Redis, 可以检测和修复 Redis 的持久化文件, 还可以检测 Redis 的性能.">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-22T10:00:44.918Z">
+<meta property="og:updated_time" content="2019-07-23T00:38:12.324Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis简介">
-<meta name="twitter:description" content="前言Redis 的全称是 Remote Dictionary Server, 主要提供了 5 种数据结构: 字符串, 哈希, 列表, 集合, 有序集合. 同时在字符串的基础上演变出了位图( Bitmaps )和 HyperLogLog 两种神奇的”数据结构”. Redis 是基于键值对的 NoSQL 数据库, 具有高性能, 丰富的数据结构, 持久化, 高可用, 分布式等特性, 同时 Redis 本">
+<meta name="twitter:title" content="Redis的启动与停止">
+<meta name="twitter:description" content="Redis 的相关文件Redis 安装之后, src 和 /usr/local/bin 目录下多了几个以 Redis 开头的可执行文件, 我们称之为 Redis Shell, 这些可执行文件可以做很多事情, 例如可以启动和停止 Redis, 可以检测和修复 Redis 的持久化文件, 还可以检测 Redis 的性能.">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/18/Redis简介/">
+  <link rel="canonical" href="http://yoursite.com/2018/01/20/Redis的启动与停止/">
 
 
 
 
 
-  <title>Redis简介 | Catalog_Tiann's blog.</title>
+  <title>Redis的启动与停止 | Catalog_Tiann's blog.</title>
   
 
 
@@ -253,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/18/Redis简介/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/20/Redis的启动与停止/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Catalog Spri">
@@ -270,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Redis简介</h1>
+          <h1 class="post-title" itemprop="name headline">Redis的启动与停止</h1>
         
 
         <div class="post-meta">
@@ -282,8 +282,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-18T22:32:36+08:00">
-                2018-01-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-20T21:53:31+08:00">
+                2018-01-20
               </time>
             
 
@@ -323,8 +323,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/18/Redis简介/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/01/18/Redis简介/" itemprop="commentsCount"></span>
+                <a href="/2018/01/20/Redis的启动与停止/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/01/20/Redis的启动与停止/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -352,45 +352,106 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Redis 的全称是 <code>Remote Dictionary Server</code>, 主要提供了 5 种数据结构: 字符串, 哈希, 列表, 集合, 有序集合. 同时在字符串的基础上演变出了位图( Bitmaps )和 HyperLogLog 两种神奇的”数据结构”.</p>
-<p>Redis 是基于键值对的 <code>NoSQL</code> 数据库, 具有<code>高性能</code>, <code>丰富的数据结构</code>, <code>持久化</code>, <code>高可用</code>, <code>分布式</code>等特性, 同时 Redis 本身非常稳定, 已经得到非常广泛的认可和使用.</p>
+        <h2 id="Redis-的相关文件"><a href="#Redis-的相关文件" class="headerlink" title="Redis 的相关文件"></a>Redis 的相关文件</h2><p>Redis 安装之后, <code>src</code> 和 <code>/usr/local/bin</code> 目录下多了几个以 Redis 开头的可执行文件, 我们称之为 <code>Redis Shell</code>, 这些可执行文件可以做很多事情, 例如可以启动和停止 Redis, 可以检测和修复 Redis 的持久化文件, 还可以检测 Redis 的性能.</p>
 <a id="more"></a>
-<h2 id="让我们来夸一下-Redis"><a href="#让我们来夸一下-Redis" class="headerlink" title="让我们来夸一下 Redis"></a>让我们来夸一下 Redis</h2><p>Redis 是一种基于 <code>key - value</code> 的 <code>NoSQL</code> 数据库, 与大多数 <code>k-v</code> 数据库不同的是, Redis 中的值可以是 <code>String</code>, <code>Hash</code>, <code>List</code>, <code>Set</code>, <code>zSet(有序集合)</code>, <code>Bitmaps(位图)</code> 等多种数据结构和算法组成, 因此, Redis 可以满足绝大多数应用场景. </p>
-<p>Redis 将数据都存放在<code>内存</code>中, 所以它的读写性能特别高. 不仅如此, Redis 还可以将内存的数据利用<code>快照</code>或者<code>日志</code>的形式保存到硬盘上, 这样在断电时也可以保证数据’不丢失’.</p>
-<p>除了上述功能以外, Redis 还提供了<code>键失活</code>, <code>发布/订阅</code>, <code>事务</code>, <code>流水线</code>, <code>Lua 脚本</code>等附加功能.</p>
-<h2 id="Redis-的特性"><a href="#Redis-的特性" class="headerlink" title="Redis 的特性"></a>Redis 的特性</h2><p>Redis 有8个重要特性</p>
-<h3 id="速度快"><a href="#速度快" class="headerlink" title="速度快"></a>速度快</h3><p>正常情况下, Redis 官方给出的读写性能是<code>100k per second</code></p>
-<p>为何这么快呢:</p>
-<ul>
-<li>Redis 的所有数据都是存放在<code>内存</code>中的</li>
-<li>Redis 是用 <code>C 语言</code>实现的, 一般来说 C 语言实现的程序’距离’操作系统更近, 执行速度相对会更快</li>
-<li>Redis 使用了<code>单线程</code>架构, 预防了多线程竞争的问题</li>
+<table>
+<thead>
+<tr>
+<th>可执行文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>redis-server</td>
+<td>启动 Redis</td>
+</tr>
+<tr>
+<td>redis-cli</td>
+<td>redis 命令行客户端</td>
+</tr>
+<tr>
+<td>redis-benchmark</td>
+<td>redis 基准测试工具</td>
+</tr>
+<tr>
+<td>redis-check-aof</td>
+<td>redis AOF 持久化文件检测和修复工具</td>
+</tr>
+<tr>
+<td>redis-check-dump</td>
+<td>redis RDB 持久化文件检测和修复工具</td>
+</tr>
+<tr>
+<td>redis-sentinel</td>
+<td>启动 Redis Sentinel</td>
+</tr>
+</tbody></table>
+<h2 id="Redis-启动的三种方式"><a href="#Redis-启动的三种方式" class="headerlink" title="Redis 启动的三种方式"></a>Redis 启动的三种方式</h2><p>有三种启动 Redis 的方法: <code>默认配置</code>, <code>运行配置</code>, <code>配置文件启动</code></p>
+<h3 id="默认配置"><a href="#默认配置" class="headerlink" title="默认配置"></a>默认配置</h3><p>这种方法会使用 Redis 的默认配置来启动. 执行 <code>redis-server</code> 后, 会看到相关日志的输出, 其中可以看到版本信息, 端口号等.</p>
+<p>因为直接启动无法自定义配置, 所以这种方式是不会在生产环境中使用的</p>
+<h3 id="运行启动"><a href="#运行启动" class="headerlink" title="运行启动"></a>运行启动</h3><p><code>redis-server</code> 加上要修改的配置名和值(可以是多对), 没有设置的配置将使用默认配置</p>
+<blockquote>
+<p>ps: redis-server –configKey1 configValue1 –configKey2 configValue2</p>
+</blockquote>
+<p>虽然运行配置可以自定义配置, 但是如果需要修改的配置较多或者希望将配置保存到文件中, 不建议使用这种方式</p>
+<h3 id="配置文件启动"><a href="#配置文件启动" class="headerlink" title="配置文件启动"></a>配置文件启动</h3><p>将配置写到指定文件里, 例如我们将配置写到 <code>/opt/redis/redis.conf</code> 中, 那么只需要执行如下命令即可启动 Redis :</p>
+<blockquote>
+<p>ps: redis-server /opt/redis/redis.conf</p>
+</blockquote>
+<p>Redis 有60+配置, 这里罗列了一些比较常用的配置</p>
+<table>
+<thead>
+<tr>
+<th>配置名称</th>
+<th>配置说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>port</td>
+<td>端口号</td>
+</tr>
+<tr>
+<td>logfile</td>
+<td>日志文件</td>
+</tr>
+<tr>
+<td>dir</td>
+<td>Redis工作目录</td>
+</tr>
+<tr>
+<td>daemonize</td>
+<td>是否以守护进程的方式启动 Redis</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>ps: 有时我们会将 redis 做多实例, 一般是将 redis.conf 配置文件复制多份, 修改部分配置, 然后通过使用不同配置文件启动来达到多实例的目的.</p>
+</blockquote>
+<h2 id="Redis命令行客户端"><a href="#Redis命令行客户端" class="headerlink" title="Redis命令行客户端"></a>Redis命令行客户端</h2><ul>
+<li>交互式方式</li>
 </ul>
-<h3 id="基于键值对的数据结构服务器"><a href="#基于键值对的数据结构服务器" class="headerlink" title="基于键值对的数据结构服务器"></a>基于键值对的数据结构服务器</h3><p>几乎所有的编程语言都提供了类似字典的功能, 这种组织数据的方式叫做基于键值的方式, 与很多键值对数据库不同的是, Redis 中的值不仅可以是字符串, 还可以是具体的数据结构, 这样不仅能便于在许多应用场景的开发, 同时也能够提高开发效率. </p>
-<h3 id="丰富的功能"><a href="#丰富的功能" class="headerlink" title="丰富的功能"></a>丰富的功能</h3><p>除了5种数据结构, Redis 还提供了许多额外的功能:</p>
+<p>通过 <code>redis-cli -h [host] -p [port]</code> 的方式连接到 Redis 服务, 之后所有的操作都是通过交互的方式实现, 不需要再执行 <code>redis-cli</code> 了</p>
 <ul>
-<li>提供了<code>键的失活</code>功能, 可以用来实现<code>缓存</code></li>
-<li>提供了<code>发布订阅</code>功能, 可以用来实现<code>消息系统</code></li>
-<li>支持 <code>Lua 脚本</code>功能, 可以利用 Lua 创造出新的 <code>Redis 命令</code></li>
-<li>提供了简单的<code>事务</code>功能, 能在一定程度上保证<code>事务特性</code></li>
-<li>提供了<code>流水线</code>功能, 这样客户端能将一批命令一次性传输到 Redis, 减少了网络的开销</li>
+<li>命令方式</li>
 </ul>
-<h3 id="简单稳定"><a href="#简单稳定" class="headerlink" title="简单稳定"></a>简单稳定</h3><p>Redis 的简单主要表现在三个方面.</p>
-<p>First, Redis 的源码很少, 早起版本的代码只有<code>两万行</code>左右, 3.0 版本以后由于添加了<code>集群特性</code>, 代码增至<code>5万行</code>左右, 相对于很多 NoSQL 数据库来说, 代码量相对要少很多.</p>
-<p>Second, Redis 使用<code>单线程</code>模型, 这样不仅使得 Redis 服务端处理模型变得简单, 而且也使得客户端开发变得简单. </p>
-<p>Last, Redis 不需要依赖于操作系统中的类库, Redis 自己实现了事件处理的相关功能.</p>
-<h3 id="客户端语言多"><a href="#客户端语言多" class="headerlink" title="客户端语言多"></a>客户端语言多</h3><p>Redis 提供了简单的 <code>TCP 通信</code>协议, 很多编程语言可以很方便地接入到 Redis, 并且由于 Redis 收到社区和各大公司的广泛认可, 所以支持 Redis 的客户端语言非常多.</p>
-<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>通常看, 将数据放在内存中是不安全的, 一旦发生断电或者及其故障, 重要的数据可能会丢失, 因此 Redis 提供了两种持久化方式: <code>RDB</code> 和 <code>AOF</code>.</p>
-<h3 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h3><p>Redis 提供了复制功能, 实现了多个相同数据的 Redis 副本, 复制功能是分布式 Redis 的基础</p>
-<h3 id="高可用和分布式"><a href="#高可用和分布式" class="headerlink" title="高可用和分布式"></a>高可用和分布式</h3><p>Redis 从 <code>2.8 版本</code>正式提供了高可用实现 <code>Redis Sentinel</code>, 它保证 Redis 节点的故障发现和故障自动迁移. Redis 从 <code>3.0 版本</code>正式提供了分布式实现 <code>Redis Cluster</code>, 它是 Redis 真正的分布式实现, 提供了高可用, 读写和容量的扩展性</p>
-<h2 id="Redis-的应用场景"><a href="#Redis-的应用场景" class="headerlink" title="Redis 的应用场景"></a>Redis 的应用场景</h2><h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>缓存机制在所有的大型网站都有使用, 合理地使用缓存不仅可以增加数据的访问速度, 还可以有效的降低后端数据库的压力. Redis提供了键失活时间设置, 并且也提供了灵活控制最大内存和内存移除后的淘汰策略.</p>
-<h3 id="排行榜系统"><a href="#排行榜系统" class="headerlink" title="排行榜系统"></a>排行榜系统</h3><p>几乎所有的网站都有排行榜系统, 例如按照热度排名的排行榜, 按照发布时间的排行榜等等. Redis 提供了列表和有序集合数据结构, 合理的使用这些数据结构可以很方便地构建各种排行榜系统.</p>
-<h3 id="计数器应用"><a href="#计数器应用" class="headerlink" title="计数器应用"></a>计数器应用</h3><p>计数器在网站中也是至关重要的, 例如视频网站有播放数, 电商网站有浏览量等, 为了保证数据的实时性, 每一次播放和浏览都要做加1的处理, 如果并发量很大对于传统关系型数据库的性能是一种考验. </p>
-<p>Redis 天生支持计数功能而且计数的性能非常好, 可以说是计数器系统的重要选择</p>
-<h3 id="社交网络"><a href="#社交网络" class="headerlink" title="社交网络"></a>社交网络</h3><p>赞/踩, 粉丝, 共同好友/喜好, 推送, 下拉刷新等是社交网络的必备功能, 由于社交网络访问量通常比较大, 而且传统的关系型数据不太适合保存这种类型的数据, Redis 提供的数据结构可以相对比较容易的实现这些功能.</p>
-<h3 id="消息队列系统"><a href="#消息队列系统" class="headerlink" title="消息队列系统"></a>消息队列系统</h3><p>消息队列系统可以说是一个大型网站的必备组件, 因为具有业务解耦, 流量削峰等特性. Redis 提供了发布订阅功能和阻塞队列的功能, 虽然和专业的消息队列比还不够强大, 但是对于一般的消息队列功能基本可以满足.</p>
-<h2 id="Redis-不能做什么"><a href="#Redis-不能做什么" class="headerlink" title="Redis 不能做什么"></a>Redis 不能做什么</h2><p>站在数据规模的角度看, 数据可以分为大规模数据和小规模数据, 我们知道 Redis 的数据是存放在内存中的, 虽然现在内存已经足够便宜, 但是如果数据量非常大, Redis 还是心有余而力不足的</p>
-<p>站在数据冷热的角度看, 数据分为热数据和冷数据, 热数据通常是指需要频繁操作的数据, 反之为冷数据, 例如对于视频网站来说, 视频基本信息基本上在哥哥业务线都是经常要操作的数据, 而用户的观看记录不一定是经常需要访问的数据, 视频信息就属于热数据, 用户观看记录属于冷数据. 如果将冷数据放在 Redis 中, 基本上是对内存的一种浪费, 但是对于一些热数据, 放在 Redis 中可以加速读写, 也可以减轻后端数据库的压力, 可以说是事半功倍.</p>
+<p>通过 <code>redis-cli -h [host] -p [port] {command}</code> 就可以直接得到命令的返回结果</p>
+<p>注意: </p>
+<ul>
+<li>如果没有指定 <code>-h</code> 参数, 默认连接 <code>127.0.0.1</code>; 如果没有指定 <code>-p</code> 参数, 默认连接 <code>6379</code> 端口.</li>
+<li>redis-cli 是学习 Redis 的重要工具</li>
+</ul>
+<h2 id="停止-Redis-服务"><a href="#停止-Redis-服务" class="headerlink" title="停止 Redis 服务"></a>停止 Redis 服务</h2><p>Redis 提供了 <code>shutdown</code> 命令来停止 Redis 服务, 例如要停掉 <code>127.0.0.1</code> 上 <code>6379</code> 端口的 Redis 服务, 可以执行如下操作.</p>
+<blockquote>
+<p>redis-cli shutdown</p>
+</blockquote>
+<p>这里有三点需要注意: </p>
+<ul>
+<li>Redis 关闭的过程: 断开与客户端的连接, 持久化文件生成, 是一种相对优雅的关闭方式.</li>
+<li>除了可以通过 shutdown 命令关闭 Redis 服务以外, 还可以通过 kill 进程号的方式关闭 Redis, 但是不要粗暴地使用 <code>kill -9</code> 强制杀死 Redis 服务, 这样不但不会做持久化操作, 还会造成缓冲区等资源不能被优雅关闭, 极端情况会造成 AOF 和复制丢失数据的情况</li>
+<li>shutdown 还有一个参数, 代表是否在关闭 Redis 前, 生成持久化文件</li>
+</ul>
+<blockquote>
+<p>redis-cli shutdown nosave|save</p>
+</blockquote>
 
       
     </div>
@@ -439,13 +500,13 @@
           
             <a href="/tags/Redis/" rel="tag"># Redis</a>
           
-            <a href="/tags/NoSQL/" rel="tag"># NoSQL</a>
+            <a href="/tags/启动Redis/" rel="tag"># 启动Redis</a>
           
-            <a href="/tags/非关系型数据库/" rel="tag"># 非关系型数据库</a>
+            <a href="/tags/停止Redis/" rel="tag"># 停止Redis</a>
           
-            <a href="/tags/Redis-特性/" rel="tag"># Redis 特性</a>
+            <a href="/tags/Redis-Server/" rel="tag"># Redis-Server</a>
           
-            <a href="/tags/Redis-优缺点/" rel="tag"># Redis 优缺点</a>
+            <a href="/tags/Redis-cli/" rel="tag"># Redis-cli</a>
           
         </div>
       
@@ -458,15 +519,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/01/20/Redis的安装/" rel="next" title="Redis的安装">
+                <i class="fa fa-chevron-left"></i> Redis的安装
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/20/Redis的安装/" rel="prev" title="Redis的安装">
-                Redis的安装 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -651,7 +712,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#让我们来夸一下-Redis"><span class="nav-number">2.</span> <span class="nav-text">让我们来夸一下 Redis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-的特性"><span class="nav-number">3.</span> <span class="nav-text">Redis 的特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#速度快"><span class="nav-number">3.1.</span> <span class="nav-text">速度快</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于键值对的数据结构服务器"><span class="nav-number">3.2.</span> <span class="nav-text">基于键值对的数据结构服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#丰富的功能"><span class="nav-number">3.3.</span> <span class="nav-text">丰富的功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单稳定"><span class="nav-number">3.4.</span> <span class="nav-text">简单稳定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端语言多"><span class="nav-number">3.5.</span> <span class="nav-text">客户端语言多</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持久化"><span class="nav-number">3.6.</span> <span class="nav-text">持久化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从复制"><span class="nav-number">3.7.</span> <span class="nav-text">主从复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高可用和分布式"><span class="nav-number">3.8.</span> <span class="nav-text">高可用和分布式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-的应用场景"><span class="nav-number">4.</span> <span class="nav-text">Redis 的应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存"><span class="nav-number">4.1.</span> <span class="nav-text">缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排行榜系统"><span class="nav-number">4.2.</span> <span class="nav-text">排行榜系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计数器应用"><span class="nav-number">4.3.</span> <span class="nav-text">计数器应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#社交网络"><span class="nav-number">4.4.</span> <span class="nav-text">社交网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列系统"><span class="nav-number">4.5.</span> <span class="nav-text">消息队列系统</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-不能做什么"><span class="nav-number">5.</span> <span class="nav-text">Redis 不能做什么</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-的相关文件"><span class="nav-number">1.</span> <span class="nav-text">Redis 的相关文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-启动的三种方式"><span class="nav-number">2.</span> <span class="nav-text">Redis 启动的三种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#默认配置"><span class="nav-number">2.1.</span> <span class="nav-text">默认配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行启动"><span class="nav-number">2.2.</span> <span class="nav-text">运行启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件启动"><span class="nav-number">2.3.</span> <span class="nav-text">配置文件启动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis命令行客户端"><span class="nav-number">3.</span> <span class="nav-text">Redis命令行客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止-Redis-服务"><span class="nav-number">4.</span> <span class="nav-text">停止 Redis 服务</span></a></li></ol></div>
             
 
           </div>
