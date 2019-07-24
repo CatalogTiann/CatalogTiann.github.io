@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RabbitMQ,消息队列,RabbitMQ持久化,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简介消息队列( Message Queue ), 是分布式系统中重要的组件, 其通用的使用场景可以简单地描述为: 当不需要立即获得结果, 但是并发量又需要进行控制的时候, 就是需要使用消息队列的时候.">
+<meta name="keywords" content="RabbitMQ,消息队列,RabbitMQ持久化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="消息队列之RabbitMQ">
+<meta property="og:url" content="http://yoursite.com/2017/09/04/消息队列之RabbitMQ/index.html">
+<meta property="og:site_name" content="Catalog_Tiann&#39;s blog.">
+<meta property="og:description" content="简介消息队列( Message Queue ), 是分布式系统中重要的组件, 其通用的使用场景可以简单地描述为: 当不需要立即获得结果, 但是并发量又需要进行控制的时候, 就是需要使用消息队列的时候.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/07/24/5d37f725a620687880.png">
+<meta property="og:updated_time" content="2019-07-24T06:45:36.926Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="消息队列之RabbitMQ">
+<meta name="twitter:description" content="简介消息队列( Message Queue ), 是分布式系统中重要的组件, 其通用的使用场景可以简单地描述为: 当不需要立即获得结果, 但是并发量又需要进行控制的时候, 就是需要使用消息队列的时候.">
+<meta name="twitter:image" content="https://i.loli.net/2019/07/24/5d37f725a620687880.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/04/消息队列之RabbitMQ/">
+
+
+
+
+
+  <title>消息队列之RabbitMQ | Catalog_Tiann's blog.</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Catalog_Tiann's blog.</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">日常干货分享</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/04/消息队列之RabbitMQ/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Catalog Spri">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Catalog_Tiann's blog.">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">消息队列之RabbitMQ</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-04T14:42:50+08:00">
+                2017-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/消息队列/" itemprop="url" rel="index">
+                    <span itemprop="name">消息队列</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/04/消息队列之RabbitMQ/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2017/09/04/消息队列之RabbitMQ/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>消息队列( <code>Message Queue</code> ), 是分布式系统中重要的组件, 其通用的使用场景可以简单地描述为: 当不需要立即获得结果, 但是并发量又需要进行控制的时候, 就是需要使用消息队列的时候. </p>
+<a id="more"></a>
+<p>当前使用较多的消息队列有 <code>RabbitMQ</code>, <code>RocketMQ</code>, <code>ActiveMQ</code>, <code>Kafka</code>, <code>ZeroMQ</code>, <code>MetaMq</code> 等, 而部分数据库如 Redis, Mysql 以及 phxsql 也可实现消息队列的功能.</p>
+<h2 id="为什么使用队列"><a href="#为什么使用队列" class="headerlink" title="为什么使用队列"></a>为什么使用队列</h2><p>以常见的订单系统为例, 用户点击<code>下单</code>按钮之后的业务逻辑可能包括: 扣减库存, 生成相应单据, 发红包, 发短信通知.</p>
+<p>在业务发展初期这些逻辑可能放在一起同步执行, 随着业务的发展订单量增长, 需要提升系统服务的性能, 这时可以将一些不需要立即生效的操作拆分出来异步执行, 比如发放红包, 发短信通知等. </p>
+<p>这种场景下就可以用消息队列, 在下单的主流程(比如扣减库存, 生成相应单据)完成之后发送一条消息到 MQ 让主流程快速完结, 而由另外的单独线程拉取 MQ 的消息(或者由 MQ 推送消息), 当发现 MQ 中有发红包或发短信之类的消息时, 执行相应的业务逻辑.</p>
+<h2 id="队列的作用"><a href="#队列的作用" class="headerlink" title="队列的作用"></a>队列的作用</h2><pre><code>1. 存储消息、数据
+2. 保证消息的顺序
+3. 保证数据的正确交付</code></pre><h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>消息队列在实际应用中包括如下四个场景：</p>
+<ol>
+<li><p>应用耦合: 多应用间通过消息队列对同一消息进行处理, 避免调用接口失败导致整个过程失败</p>
+</li>
+<li><p>异步处理: 多应用对消息队列中同一消息进行处理, 应用间并发处理消息, 相比串行处理, 减少处理时间</p>
+</li>
+<li><p>流量削峰: 广泛应用于秒杀或抢购活动中, 避免流量过大导致应用系统挂掉的情况</p>
+</li>
+<li><p>消息驱动的系统: 系统分为<code>消息队列</code>, <code>消息生产者</code>, <code>消息消费者</code>, 生产者负责产生消息, 消费者(可能有多个)负责对消息进行处理</p>
+</li>
+</ol>
+<h2 id="Rabbitmq"><a href="#Rabbitmq" class="headerlink" title="Rabbitmq"></a>Rabbitmq</h2><h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="https://i.loli.net/2019/07/24/5d37f725a620687880.png" alt="RabbitMQ 架构示意图"></p>
+<h4 id="Publisher"><a href="#Publisher" class="headerlink" title="Publisher"></a>Publisher</h4><p>消息的生产者, 也是一个向交换器发布消息的客户端应用程序.</p>
+<h4 id="Exchange"><a href="#Exchange" class="headerlink" title="Exchange"></a>Exchange</h4><p>交换器, 用来接收生产者发送的消息并将这些消息路由给服务器中的队列.</p>
+<h4 id="Queue"><a href="#Queue" class="headerlink" title="Queue"></a>Queue</h4><p>消息队列, 用来保存消息直到发送给消费者. 它是消息的容器, 也是消息的终点. 一个消息可投入一个或多个队列. 消息一直在队列里面, 等待消费者连接到这个队列将其取走.</p>
+<h4 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h4><p>信道, 多路复用连接中的一条独立的双向数据流通道.</p>
+<h4 id="Consumer"><a href="#Consumer" class="headerlink" title="Consumer"></a>Consumer</h4><p>消息的消费者, 表示一个从消息队列中取得消息的客户端应用程序.</p>
+<h3 id="Rabbitmq的使用"><a href="#Rabbitmq的使用" class="headerlink" title="Rabbitmq的使用"></a>Rabbitmq的使用</h3><h4 id="发送简单消息"><a href="#发送简单消息" class="headerlink" title="发送简单消息"></a>发送简单消息</h4><p><strong>Producer</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定rabbit用户名和密码, 创建认证对象</span></span><br><span class="line">credentials = pika.PlainCredentials(<span class="string">'lisi'</span>,<span class="string">'123456'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 连接rabbit服务器, 指定服务器为本地服务器, 验证为上面生成的验证</span></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(host=<span class="string">"localhost"</span>, credentials=credentials))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个频道对象</span></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 为该频道创建一个名字</span></span><br><span class="line">channel.queue_declare(<span class="string">'test'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送消息</span></span><br><span class="line">channel.basic_publish(exchange=<span class="string">''</span>, routing_key=<span class="string">'test'</span>,  body=<span class="string">'hello test'</span>)</span><br><span class="line">print(<span class="string">'publish done'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭连接</span></span><br><span class="line">connection.close()</span><br></pre></td></tr></table></figure>
+
+<p><strong>Consumer</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pika</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定用户名和密码, 创建认证对象</span></span><br><span class="line">credentials = pika.PlainCredentials(<span class="string">'lisi'</span>,<span class="string">'123456'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 连接rabbit服务器, 指定服务器为本地服务器, 认证为上面创建的认证</span></span><br><span class="line">connection = pika.BlockingConnection(pika.ConnectionParameters(host=<span class="string">"localhost"</span>, credentials=credentials))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个频道对象</span></span><br><span class="line">channel = connection.channel()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 声明该频道对象名称, 名称存在则连接到该频道</span></span><br><span class="line">channel.queue_declare(queue=<span class="string">'test'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义一个函数, 参数固定</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">"consume done"</span>, ch, method, properties,body)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 接收消息</span></span><br><span class="line">channel.basic_consume(callback, queue=<span class="string">"test"</span>, no_ack=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开启消费者</span></span><br><span class="line">channel.start_consuming()</span><br></pre></td></tr></table></figure>
+
+<h4 id="连接远程rabbitmq"><a href="#连接远程rabbitmq" class="headerlink" title="连接远程rabbitmq"></a>连接远程rabbitmq</h4><p>首先生成一个用户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl  add_user zhangsan 123456</span><br></pre></td></tr></table></figure>
+
+<p>然后修改一下权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl set_permissions -p / zhangsan ".*" ".*" ".*"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 命令讲解</span><br><span class="line">set_permissions [-p vhost] &#123;user&#125; &#123;conf&#125; &#123;write&#125; &#123;read&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="RabbitMQ-持久化"><a href="#RabbitMQ-持久化" class="headerlink" title="RabbitMQ 持久化"></a>RabbitMQ 持久化</h3><h4 id="保证队列不丢失"><a href="#保证队列不丢失" class="headerlink" title="保证队列不丢失"></a>保证队列不丢失</h4><p>在队列里, 设置 <code>durable=true</code> 保证队列不丢失</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.queue_declare(queue=’test’, durable=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="保证消息不丢失"><a href="#保证消息不丢失" class="headerlink" title="保证消息不丢失"></a>保证消息不丢失</h4><p>在生产者端, 设置 </p>
+<pre><code>properties = pika.BasicProperties(delivery_mode=2,  # make message persistent)``</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">channel.basic_publish(exchange=<span class="string">'mydirect'</span>, </span><br><span class="line">                    routing_key=<span class="string">'task_queue'</span>, </span><br><span class="line">                    body=message,</span><br><span class="line">                   properties=pika.BasicProperties(delivery_mode=<span class="number">2</span>) <span class="comment"># make message persistent</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>在消费者端</p>
+<pre><code>auto_ack = False
+ch.basic_ack(delivery_tag=method.delivery_tag)</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(ch, method, properties, body)</span>:</span></span><br><span class="line">    print(<span class="string">" [x] Received %r"</span> % body)</span><br><span class="line">    time.sleep(<span class="number">10</span>)</span><br><span class="line">    print(<span class="string">" [x] Done"</span>)</span><br><span class="line">    print(<span class="string">"method.delivery_tag"</span>,method.delivery_tag)</span><br><span class="line">    ch.basic_ack(delivery_tag=method.delivery_tag)</span><br></pre></td></tr></table></figure>
+
+<h3 id="能者多劳"><a href="#能者多劳" class="headerlink" title="能者多劳"></a>能者多劳</h3><p>服务器的性能大小不一, 有的服务器处理的快, 有的服务器处理的慢, 因此默认的轮询方式不能够满足我们的需求, 我们要的是能者多劳, 最大限度的发挥我们机器的性能. 为解决此问题, 可以在各个消费者端, 配置 <code>perfetch=1</code>, 意思就是告诉 RabbitMQ 在我这个消费者当前消息还没处理完的时候就不要再给我发新消息了.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">channel.basic_qos(prefetch_count=<span class="number">1</span>)</span><br><span class="line">channel.basic_consume(callback, queue=<span class="string">'task_queue'</span>)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+    
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持干货分享, 您的支持将鼓励我持续创作!</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="Catalog Spri 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/uploads/alipay.jpg" alt="Catalog Spri 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Catalog Spri
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2017/09/04/消息队列之RabbitMQ/" title="消息队列之RabbitMQ">http://yoursite.com/2017/09/04/消息队列之RabbitMQ/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          
+            <a href="/tags/消息队列/" rel="tag"># 消息队列</a>
+          
+            <a href="/tags/RabbitMQ持久化/" rel="tag"># RabbitMQ持久化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/06/deque双端队列/" rel="next" title="deque双端队列">
+                <i class="fa fa-chevron-left"></i> deque双端队列
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/28/Python虚拟环境的作用及搭建方法/" rel="prev" title="Python虚拟环境的作用及搭建方法">
+                Python虚拟环境的作用及搭建方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+<div onclick="showGitment()" id="gitment_title" class="gitment_title">显示 Gitment 评论</div>
+  <div id="container" style="display:none"></div>
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+  <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+  <script>
+  const myTheme = {
+    render(state, instance) {
+      const container = document.createElement('div');
+      container.lang = "en-US";
+      container.className = 'gitment-container gitment-root-container';
+      container.appendChild(instance.renderHeader(state, instance));
+      container.appendChild(instance.renderEditor(state, instance));
+      container.appendChild(instance.renderComments(state, instance));
+      container.appendChild(instance.renderFooter(state, instance));
+      return container;
+    }
+  }
+  function showGitment() {
+    $("#gitment_title").attr("style", "display:none");
+    $("#container").attr("style", "").addClass("gitment_container");
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      theme: myTheme,
+      owner: '',
+      repo: '',
+      oauth: {
+        client_id: '',
+        client_secret: ''
+      }
+    });
+    gitment.render('container');
+  }
+  </script>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="Catalog Spri">
+            
+              <p class="site-author-name" itemprop="name">Catalog Spri</p>
+              <p class="site-description motion-element" itemprop="description">Life is short, you need python!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/CatalogTiann" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renyachunchun@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么使用队列"><span class="nav-number">2.</span> <span class="nav-text">为什么使用队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#队列的作用"><span class="nav-number">3.</span> <span class="nav-text">队列的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">4.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rabbitmq"><span class="nav-number">5.</span> <span class="nav-text">Rabbitmq</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#架构"><span class="nav-number">5.1.</span> <span class="nav-text">架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Publisher"><span class="nav-number">5.1.1.</span> <span class="nav-text">Publisher</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Exchange"><span class="nav-number">5.1.2.</span> <span class="nav-text">Exchange</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Queue"><span class="nav-number">5.1.3.</span> <span class="nav-text">Queue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Channel"><span class="nav-number">5.1.4.</span> <span class="nav-text">Channel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Consumer"><span class="nav-number">5.1.5.</span> <span class="nav-text">Consumer</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rabbitmq的使用"><span class="nav-number">5.2.</span> <span class="nav-text">Rabbitmq的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发送简单消息"><span class="nav-number">5.2.1.</span> <span class="nav-text">发送简单消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接远程rabbitmq"><span class="nav-number">5.2.2.</span> <span class="nav-text">连接远程rabbitmq</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RabbitMQ-持久化"><span class="nav-number">5.3.</span> <span class="nav-text">RabbitMQ 持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#保证队列不丢失"><span class="nav-number">5.3.1.</span> <span class="nav-text">保证队列不丢失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#保证消息不丢失"><span class="nav-number">5.3.2.</span> <span class="nav-text">保证消息不丢失</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#能者多劳"><span class="nav-number">5.4.</span> <span class="nav-text">能者多劳</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+
+<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+<div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div id="myCanvasContainer" class="widget tagcloud">
+        <canvas width="250" height="250" id="resCanvas" style="width=100%">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django-1-11/">Django 1.11</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django-2-x/">Django 2.x</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python发邮件/">Python发邮件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python虚拟环境/">Python虚拟环境</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ持久化/">RabbitMQ持久化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-优缺点/">Redis 优缺点</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-特性/">Redis 特性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-Server/">Redis-Server</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-cli/">Redis-cli</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis的安装/">Redis的安装</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Request-Header/">Request Header</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SMTP/">SMTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SMTP协议/">SMTP协议</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spider/">Spider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/User-Agent/">User-Agent</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/collectiions模块/">collectiions模块</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/deque/">deque</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greedy-algorithm/">greedy algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http请求头/">http请求头</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/smtplib/">smtplib</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/virtualenv/">virtualenv</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web框架/">web框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/人民币问题/">人民币问题</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/停止Redis/">停止Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分治思想/">分治思想</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分糖果问题/">分糖果问题</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/双端队列/">双端队列</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动Redis/">启动Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快排/">快排</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快速排序/">快速排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/校花网/">校花网</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息队列/">消息队列</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/爬校花网/">爬校花网</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/爬虫/">爬虫</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟环境/">虚拟环境</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/贪心算法/">贪心算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/队列/">队列</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/非关系型数据库/">非关系型数据库</a><span class="tag-list-count">2</span></li></ul>
+        </canvas>
+    </div>
+</div>
+
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Catalog Spri</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">13.7k</span>
+  
+</div>
+<!-- 
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+-->
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共13.7k字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
+</html>
+
+
+
+
++ <!-- 页面点击小红心 -->
++ <script type="text/javascript" src="/js/src/love.js"></script>
+
