@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Django,web框架,Django 2.x,Django 1.11,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="关于版本问题Django 2.0 支持 Python 3.4, 3.5 和 3.6, 不再支持python2.x Django 1.11.x 是支持 Python 2.7 的最后一个版本. Django 2.0 是最后一个支持 Python 3.4 的版本, 并且只支持到 2019 年 4 月, 到时如果你仍然计划使用 Python 3.4, 可以用 Django 1.11 LTS (支持到 20">
+<meta name="keywords" content="Django,web框架,Django 2.x,Django 1.11">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django版本区别">
+<meta property="og:url" content="http://yoursite.com/2018/02/08/Django版本区别/index.html">
+<meta property="og:site_name" content="Catalog_Tiann&#39;s blog.">
+<meta property="og:description" content="关于版本问题Django 2.0 支持 Python 3.4, 3.5 和 3.6, 不再支持python2.x Django 1.11.x 是支持 Python 2.7 的最后一个版本. Django 2.0 是最后一个支持 Python 3.4 的版本, 并且只支持到 2019 年 4 月, 到时如果你仍然计划使用 Python 3.4, 可以用 Django 1.11 LTS (支持到 20">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/07/24/5d379fa3e2a9429635.png">
+<meta property="og:image" content="https://i.loli.net/2019/07/24/5d379fd4b8ac392463.png">
+<meta property="og:updated_time" content="2019-07-24T00:39:46.440Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Django版本区别">
+<meta name="twitter:description" content="关于版本问题Django 2.0 支持 Python 3.4, 3.5 和 3.6, 不再支持python2.x Django 1.11.x 是支持 Python 2.7 的最后一个版本. Django 2.0 是最后一个支持 Python 3.4 的版本, 并且只支持到 2019 年 4 月, 到时如果你仍然计划使用 Python 3.4, 可以用 Django 1.11 LTS (支持到 20">
+<meta name="twitter:image" content="https://i.loli.net/2019/07/24/5d379fa3e2a9429635.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/08/Django版本区别/">
+
+
+
+
+
+  <title>Django版本区别 | Catalog_Tiann's blog.</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Catalog_Tiann's blog.</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">日常干货分享</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/08/Django版本区别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Catalog Spri">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Catalog_Tiann's blog.">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Django版本区别</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-08T19:37:34+08:00">
+                2018-02-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/08/Django版本区别/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/02/08/Django版本区别/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="关于版本问题"><a href="#关于版本问题" class="headerlink" title="关于版本问题"></a>关于版本问题</h2><p>Django 2.0 支持 Python 3.4, 3.5 和 3.6, 不再支持python2.x</p>
+<p>Django 1.11.x 是支持 Python 2.7 的最后一个版本.</p>
+<p>Django 2.0 是最后一个支持 Python 3.4 的版本, 并且只支持到 2019 年 4 月, 到时如果你仍然计划使用 Python 3.4, 可以用 <code>Django 1.11 LTS</code> (支持到 2020 年 4 月)不过需要注意的是, Python 3.4 的使用期限是 2019 年 3 月.</p>
+<a id="more"></a>
+<p>目前来说, 我个人还是习惯使用 Django 1.11.9 版本, 但是人总是要往高处走的嘛, 我们要慢慢的向 Django 2.x 前进, 及时更新自己!</p>
+<h2 id="Django2-x与Django1-11-9区别"><a href="#Django2-x与Django1-11-9区别" class="headerlink" title="Django2.x与Django1.11.9区别"></a>Django2.x与Django1.11.9区别</h2><h3 id="路由层的区别"><a href="#路由层的区别" class="headerlink" title="路由层的区别"></a>路由层的区别</h3><ul>
+<li>Django 1.11.9 使用的是 url 函数</li>
+<li>Django 2.x 使用的是 path 和 re_path 函数, 其中, re_path 函数与 url 函数使用方法完全相同. path 函数中, 第一个参数为绝对匹配, 写什么就匹配什么.</li>
+<li>Django 2.x 默认支持以下 5 个转化器: <ol>
+<li>str, 匹配除了路径分隔符(/)之外的非空字符串, 这是默认的形式</li>
+<li>int, 匹配正整数, 包含0.</li>
+<li>slug, 匹配字母, 数字以及横杠(-), 下划线(_)组成的字符串.</li>
+<li>uuid, 匹配格式化的 uuid, 如 <code>075194d3-6885-417e-a8a8-6c931e272f00</code>.</li>
+<li>path, 匹配任何非空字符串, 包含了路径分隔符(\)</li>
+</ol>
+</li>
+</ul>
+<h4 id="自定义转换器"><a href="#自定义转换器" class="headerlink" title="自定义转换器"></a>自定义转换器</h4><p>对于一些复杂或者复用的需要, 可以定义自己的转化器. 转化器是一个类或接口, 它的要求有三点: </p>
+<pre><code>1. regex 类属性, 字符串类型
+2. to_python(self, value) 方法，value 是由类属性 regex 所匹配到的字符串，返回具体的 Python 变量值, 以供 Django 传递到对应的视图函数中.
+3. to_url(self, value) 方法, 和 to_python 相反, value 是一个具体的 Python 变量值, 返回其字符串, 通常用于 url 反向引用.</code></pre><h5 id="一个小-demo"><a href="#一个小-demo" class="headerlink" title="一个小 demo"></a>一个小 demo</h5><p>第一步: 定义一个类, 其中必须定义一个变量: <code>regex</code>, 两个方法: 一个 <code>to\_python</code>, 一个 <code>to\_url</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FourDigitYearConverter</span>:</span>  </span><br><span class="line"></span><br><span class="line">    regex = <span class="string">'[0-9]&#123;4&#125;'</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">to_python</span><span class="params">(self, value)</span>:</span>  </span><br><span class="line">        <span class="keyword">return</span> int(value) </span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">to_url</span><span class="params">(self, value)</span>:</span>  </span><br><span class="line">        <span class="keyword">return</span> <span class="string">'%04d'</span> % value</span><br></pre></td></tr></table></figure>
+
+<p>第二步: 使用 <code>register_converter</code> 将其注册到URL配置中, 然后就可以使用了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> register_converter, path  </span><br><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> converters, views  </span><br><span class="line"></span><br><span class="line"><span class="comment"># register_converter（类名, '别名'）</span></span><br><span class="line">register_converter(converters.FourDigitYearConverter, <span class="string">'yyyy'</span>)  </span><br><span class="line"></span><br><span class="line">urlpatterns = [  </span><br><span class="line">    path(<span class="string">'articles/2003/'</span>, views.special_case_2003),</span><br><span class="line">    path(<span class="string">'articles/&lt;yyyy:year&gt;/'</span>, views.year_archive),</span><br><span class="line">    ...  </span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="模型层的区别"><a href="#模型层的区别" class="headerlink" title="模型层的区别"></a>模型层的区别</h3><ol>
+<li><code>ForeignKey</code> 需要手动指定 <code>on_delete</code> 参数</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ForeignKey(to=<span class="string">'Publish'</span>, to_field=<span class="string">'id'</span>,on_delete=models.CASCADE)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>新增 <code>StrIndex</code> 数据库函数</p>
+</li>
+<li><p>对于 <code>Oracle</code> 数据库, <code>AutoField</code> 和 <code>BigAutoField</code> 现在会生成 <code>identity</code> 列</p>
+</li>
+<li><p><code>QuerySet.iterator()</code> 新增 <code>chunk_size</code> 参数</p>
+</li>
+<li><p><code>QuerySet.earliest()</code>, <code>QuerySet.latest()</code> 和 <code>Meta.get_latest_by</code> 现在可以根据一些字段进行排序</p>
+</li>
+<li><p>增加 <code>ExtractQuarter</code> 方法，用于<code>DateField</code> 和 <code>DateTimeField</code></p>
+</li>
+<li><p>新增 <code>TruncQuarter</code> 方法用于截取 <code>DateField</code> 和 <code>DateTimeField</code> 到季度的第一天</p>
+</li>
+<li><p>为基于类的索引添加 <code>db_tablespace</code> 参数</p>
+</li>
+<li><p>为 <code>QuerySet.select_for_update()</code> 增加 of 参数, 但只支持 <code>PostgreSQL</code> 和 <code>Oracle</code> 数据库</p>
+</li>
+<li><p><code>QuerySet.in_bulk()</code> 新增 <code>field_name</code> 参数</p>
+</li>
+<li><p><code>CursorWrapper.callproc()</code> 现在接收可选的字典类型关键字参数</p>
+</li>
+<li><p><code>QuerySet.values_list()</code> 新增 <code>named</code> 参数, 用于获取命名的元组结果</p>
+</li>
+<li><p>新的 <code>FilteredRelation</code> 类允许为查询集增加一个 <code>ON</code> 从句</p>
+</li>
+<li><p>增加 <code>Paginator.get_page()</code>, 可以处理各种非法页面参数, 防止异常</p>
+</li>
+</ol>
+<h3 id="管理后台样式自适应，支持移动端浏览器了"><a href="#管理后台样式自适应，支持移动端浏览器了" class="headerlink" title="管理后台样式自适应，支持移动端浏览器了"></a>管理后台样式自适应，支持移动端浏览器了</h3><p>以前 <code>Django-admin</code> 在移动端是显示不完整的, 需要左右拉动才能浏览完整</p>
+<p>Django 2.0 的 admin 在移动端下会自动换行显示</p>
+<p>也就是说, Django 2.0 的 admin 具有响应式特性, 适配主流移动端机型.</p>
+<h3 id="重要更新"><a href="#重要更新" class="headerlink" title="重要更新"></a>重要更新</h3><h4 id="表单的字段不再接收可选参数作为位置参数"><a href="#表单的字段不再接收可选参数作为位置参数" class="headerlink" title="表单的字段不再接收可选参数作为位置参数"></a>表单的字段不再接收可选参数作为位置参数</h4><p>为了防止运行时错误, 提高可靠性. 以前类似下面的参数传递方法, 现在是错误的了:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forms.IntegerField(<span class="number">25</span>, <span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<p>现在应该这样传递:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forms.IntegerField(max_value=<span class="number">25</span>, min_value=<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="index-不再接收位置参数"><a href="#index-不再接收位置参数" class="headerlink" title="index 不再接收位置参数"></a>index 不再接收位置参数</h4><p>例如下面的用法将导致异常:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">models.Index([<span class="string">'headline'</span>, <span class="string">'-pub_date'</span>], <span class="string">'index_name'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>要提供参数关键字, 改写为:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">models.Index(fields=[<span class="string">'headline'</span>, <span class="string">'-pub_date'</span>], name=<span class="string">'index_name'</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="QuerySet-reverse-和-last-不能用于切片后的查询集"><a href="#QuerySet-reverse-和-last-不能用于切片后的查询集" class="headerlink" title="QuerySet.reverse() 和 last() 不能用于切片后的查询集"></a>QuerySet.reverse() 和 last() 不能用于切片后的查询集</h4><p>对切片后的查询集使用反转和获取最近对象的操作将弹出异常, 如下所示: </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Model.objects.all()[:<span class="number">2</span>].reverse()</span><br><span class="line"></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">...</span><br><span class="line">TypeError: Cannot reverse a query once a slice has been taken.</span><br></pre></td></tr></table></figure>
+
+<h2 id="下载-Django-框架"><a href="#下载-Django-框架" class="headerlink" title="下载 Django 框架"></a>下载 Django 框架</h2><p>ps: 建议配置两个虚拟环境, 一个安装 Django 1.11.x 版本, 另一个安装 Django 2.x 版本.</p>
+<p><a href="https://blog.csdn.net/qq_33404767/article/details/86479820" target="_blank" rel="noopener">Python虚拟环境的作用及搭建方法</a></p>
+<h3 id="方式一"><a href="#方式一" class="headerlink" title="方式一"></a>方式一</h3><p>打开 Terminal/cmd，输入pip3 install django==1.11.9 控制 django 版本为 1.11.9</p>
+<p>打开Terminal/cmd，输入 pip3 install django 自动安装最新版本 django</p>
+<h3 id="方式二"><a href="#方式二" class="headerlink" title="方式二"></a>方式二</h3><p>使用Pycharm安装</p>
+<p>第一步:</p>
+<p><img src="https://i.loli.net/2019/07/24/5d379fa3e2a9429635.png" alt="WeChatda55bd4d6c38c6b6b3286765232f1bbf.png"></p>
+<p>第二步:</p>
+<p><img src="https://i.loli.net/2019/07/24/5d379fd4b8ac392463.png" alt="WeChat39bc771b8e033c191c24004bd3dbafb4.png"></p>
+<p>第三步:</p>
+<p>点击左下角 Install Package</p>
+
+      
+    </div>
+    
+    
+    
+    
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持干货分享, 您的支持将鼓励我持续创作!</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="Catalog Spri 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/uploads/alipay.jpg" alt="Catalog Spri 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Django/" rel="tag"># Django</a>
+          
+            <a href="/tags/web框架/" rel="tag"># web框架</a>
+          
+            <a href="/tags/Django-2-x/" rel="tag"># Django 2.x</a>
+          
+            <a href="/tags/Django-1-11/" rel="tag"># Django 1.11</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/20/Redis的启动与停止/" rel="next" title="Redis的启动与停止">
+                <i class="fa fa-chevron-left"></i> Redis的启动与停止
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/08/爬取校花网视频/" rel="prev" title="爬取校花网视频">
+                爬取校花网视频 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+<div onclick="showGitment()" id="gitment_title" class="gitment_title">显示 Gitment 评论</div>
+  <div id="container" style="display:none"></div>
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+  <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+  <script>
+  const myTheme = {
+    render(state, instance) {
+      const container = document.createElement('div');
+      container.lang = "en-US";
+      container.className = 'gitment-container gitment-root-container';
+      container.appendChild(instance.renderHeader(state, instance));
+      container.appendChild(instance.renderEditor(state, instance));
+      container.appendChild(instance.renderComments(state, instance));
+      container.appendChild(instance.renderFooter(state, instance));
+      return container;
+    }
+  }
+  function showGitment() {
+    $("#gitment_title").attr("style", "display:none");
+    $("#container").attr("style", "").addClass("gitment_container");
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      theme: myTheme,
+      owner: '',
+      repo: '',
+      oauth: {
+        client_id: '',
+        client_secret: ''
+      }
+    });
+    gitment.render('container');
+  }
+  </script>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="Catalog Spri">
+            
+              <p class="site-author-name" itemprop="name">Catalog Spri</p>
+              <p class="site-description motion-element" itemprop="description">Life is short, you need python!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/CatalogTiann" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renyachunchun@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于版本问题"><span class="nav-number">1.</span> <span class="nav-text">关于版本问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django2-x与Django1-11-9区别"><span class="nav-number">2.</span> <span class="nav-text">Django2.x与Django1.11.9区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#路由层的区别"><span class="nav-number">2.1.</span> <span class="nav-text">路由层的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义转换器"><span class="nav-number">2.1.1.</span> <span class="nav-text">自定义转换器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#一个小-demo"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">一个小 demo</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型层的区别"><span class="nav-number">2.2.</span> <span class="nav-text">模型层的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管理后台样式自适应，支持移动端浏览器了"><span class="nav-number">2.3.</span> <span class="nav-text">管理后台样式自适应，支持移动端浏览器了</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重要更新"><span class="nav-number">2.4.</span> <span class="nav-text">重要更新</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#表单的字段不再接收可选参数作为位置参数"><span class="nav-number">2.4.1.</span> <span class="nav-text">表单的字段不再接收可选参数作为位置参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#index-不再接收位置参数"><span class="nav-number">2.4.2.</span> <span class="nav-text">index 不再接收位置参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QuerySet-reverse-和-last-不能用于切片后的查询集"><span class="nav-number">2.4.3.</span> <span class="nav-text">QuerySet.reverse() 和 last() 不能用于切片后的查询集</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载-Django-框架"><span class="nav-number">3.</span> <span class="nav-text">下载 Django 框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方式一"><span class="nav-number">3.1.</span> <span class="nav-text">方式一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方式二"><span class="nav-number">3.2.</span> <span class="nav-text">方式二</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Catalog Spri</span>
+
+  
+</div>
+<!-- 
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+-->
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
