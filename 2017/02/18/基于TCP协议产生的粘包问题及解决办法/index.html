@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="粘包问题,socket,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="协议简要介绍TCP ( transport control protocol, 传输控制协议) 是面向连接的, 面向流的, 提供高可靠性服务. 收发两端(客户端和服务器端)都要有一一成对的 socket, 因此, 发送端为了将多个发往接收端的包, 更有效的发到对方, 使用了优化方法( Nagle算法), 将多次间隔较小且数据量小的数据, 合并成一个大的数据块, 然后进行封包. 这样, 接收端就难于">
+<meta name="keywords" content="粘包问题,socket">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于TCP协议产生的粘包问题及解决办法">
+<meta property="og:url" content="http://catalogtiann.github.io/2017/02/18/基于TCP协议产生的粘包问题及解决办法/index.html">
+<meta property="og:site_name" content="Catalog Spri&#39;s blog.">
+<meta property="og:description" content="协议简要介绍TCP ( transport control protocol, 传输控制协议) 是面向连接的, 面向流的, 提供高可靠性服务. 收发两端(客户端和服务器端)都要有一一成对的 socket, 因此, 发送端为了将多个发往接收端的包, 更有效的发到对方, 使用了优化方法( Nagle算法), 将多次间隔较小且数据量小的数据, 合并成一个大的数据块, 然后进行封包. 这样, 接收端就难于">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/07/25/5d38fcd931c7138631.png">
+<meta property="og:image" content="https://i.loli.net/2019/07/25/5d3946e356e5c90599.png">
+<meta property="og:updated_time" content="2019-08-02T01:38:16.418Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于TCP协议产生的粘包问题及解决办法">
+<meta name="twitter:description" content="协议简要介绍TCP ( transport control protocol, 传输控制协议) 是面向连接的, 面向流的, 提供高可靠性服务. 收发两端(客户端和服务器端)都要有一一成对的 socket, 因此, 发送端为了将多个发往接收端的包, 更有效的发到对方, 使用了优化方法( Nagle算法), 将多次间隔较小且数据量小的数据, 合并成一个大的数据块, 然后进行封包. 这样, 接收端就难于">
+<meta name="twitter:image" content="https://i.loli.net/2019/07/25/5d38fcd931c7138631.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://catalogtiann.github.io/2017/02/18/基于TCP协议产生的粘包问题及解决办法/">
+
+
+
+
+
+  <title>基于TCP协议产生的粘包问题及解决办法 | Catalog Spri's blog.</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Catalog Spri's blog.</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">日常干货分享</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://catalogtiann.github.io/2017/02/18/基于TCP协议产生的粘包问题及解决办法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Catalog Spri">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Catalog Spri's blog.">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">基于TCP协议产生的粘包问题及解决办法</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-18T19:35:50+08:00">
+                2017-02-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络编程/" itemprop="url" rel="index">
+                    <span itemprop="name">网络编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/18/基于TCP协议产生的粘包问题及解决办法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2017/02/18/基于TCP协议产生的粘包问题及解决办法/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="协议简要介绍"><a href="#协议简要介绍" class="headerlink" title="协议简要介绍"></a>协议简要介绍</h2><p>TCP ( <code>transport control protocol</code>, 传输控制协议) 是面向连接的, 面向流的, 提供高可靠性服务. 收发两端(客户端和服务器端)都要有一一成对的 socket, 因此, 发送端为了将多个发往接收端的包, 更有效的发到对方, 使用了优化方法( <code>Nagle算法</code>), 将多次间隔较小且数据量小的数据, 合并成一个大的数据块, 然后进行封包. 这样, 接收端就难于分辨出来了, 必须提供科学的拆包机制.  </p>
+<a id="more"></a>
+<p>即面向流的通信是无消息保护边界的.</p>
+<p>UDP ( <code>user datagram protocol</code>, 用户数据报协议) 是无连接的, 面向消息的, 提供高效率服务. 不会使用块的合并优化算法,  由于 UDP 支持的是一对多的模式, 所以接收端的 skbuff (套接字缓冲区) 采用了链式结构来记录每一个到达的 UDP 包, 在每个 UDP 包中就有了消息头(消息来源地址，端口等信息). 这样, 对于接收端来说, 就容易进行区分处理了.</p>
+<p>即面向消息的通信是有消息保护边界的。</p>
+<p>Tips: TCP 是基于数据流的, 这就导致收发的消息不能为空, 就需要在客户端和服务端都添加对空消息的处理机制, 防止程序卡住. 而 UDP 是基于数据报的, 即便是你输入的是空内容(直接回车), 那也不是空消息, UDP 协议会帮你封装上消息头.</p>
+<h2 id="产生粘包的原因"><a href="#产生粘包的原因" class="headerlink" title="产生粘包的原因"></a>产生粘包的原因</h2><p>ps: 只有 TCP 协议才会产生粘包问题, UDP 协议是不存在粘包问题的. </p>
+<p>附上数据在网络中的传输示意图</p>
+<p><img src="https://i.loli.net/2019/07/25/5d38fcd931c7138631.png" alt="数据在网络中的传输示意图"></p>
+<p>对于 TCP 协议, 发送端(一般是服务端)可以一次发送任意字节的数据(一个 TCP 数据包最大负载为 1400 字节, 但是一次可以发送多个数据包), 接收端也可以一次接收任意字节的数据, 有可能一次提走 3K 或 6K 数据, 或者一次只提走几个字节的数据. 也就是说, 应用程序所看到的数据是一个整体, 或说是一个流( stream ), 一条消息有多少字节对应用程序是不可见的, 因此 TCP 协议是流式协议, 这也是容易出现粘包问题的原因.</p>
+<p>UDP 是面向消息的协议, 每个 UDP 段都对应一条消息(或者说是一个整体), 应用程序必须以消息为单位提取数据, 不能以字节为单位提取数据, 这一点和 TCP 是很不同的. </p>
+<p>怎样定义消息呢? 可以认为对方一次 <code>write/send</code> 的数据为一个消息, 需要明白的是当对方 send 一条信息的时候, 无论底层怎样分段分片, TCP 协议层会把构成整条消息的数据段排序完成后才呈现在内核缓冲区.</p>
+<p>例如基于 TCP 协议的套接字客户端往服务端上传文件, 发送时文件内容是按照一段一段的字节流发送的; 在接收方看来, 根本不知道该文件的字节流从何处开始, 在何处结束.</p>
+<p>所谓粘包问题主要还是因为接收方不知道消息之间的界限, 不知道一次应该提取多少字节的数据所造成的.</p>
+<p>此外, 发送方引起的粘包是由 TCP 协议本身造成的, TCP 为提高传输效率, 发送方往往要收集到足够多的数据后才发送一个 TCP 段. 若连续几次需要 send 的数据都很少, 通常TCP会根据优化算法把这些数据合成一个 TCP 段后一次发送出去, 这样接收方就收到了粘包数据.</p>
+<h3 id="有两种情况会发生粘包问题"><a href="#有两种情况会发生粘包问题" class="headerlink" title="有两种情况会发生粘包问题"></a>有两种情况会发生粘包问题</h3><ol>
+<li><p>发送端需要等缓冲区满才发送出去, 造成粘包(发送数据时间间隔短, 数据量小, 会在缓冲区粘合到一起, 产生粘包)</p>
+</li>
+<li><p>接收方不及时接收缓冲区的包, 造成多个包一次接收(客户端发送了一段数据, 服务端只收了一小部分, 服务端下次再收的时候还是从缓冲区拿上次遗留的数据, 产生粘包)</p>
+</li>
+</ol>
+<h2 id="解决粘包问题"><a href="#解决粘包问题" class="headerlink" title="解决粘包问题"></a>解决粘包问题</h2><p>通过上面的分析发现可以看出, 出现粘包问题的原因是: 接收方不知道该提取多少字节.</p>
+<p>既然知道了问题出现的原因, 我们就对症下药, 解决粘包问题就变得很简单了, 让接收方知道提取多少字节, 粘包问题不就解决了. 接下来我们就想办法让接收方知道应该提取多少字节.</p>
+<p>我们在服务端可以很容易的就确定要发送的数据长度, 问题的关键在于, 如何通知到客户端. </p>
+<p>如果我们再发送正文数据之前, 先发送一条数据告诉客户端, 应该接收多大数据量, 问题就解决了. </p>
+<p>但是先发送的这条数据又该接收多少呢? 这就成了一个死循环了. 为了打破这种循环, 我们必须固定第一条数据的大小, 让客户端准确接收.</p>
+<p>struct 模块刚好就是把 Python 中的数据类型转换成固定长度的 <code>bytes</code></p>
+<p>struct 模块可以将不定长度的数字, 列表, 字典等数据类型转换成定长的 bytes 类型, 我们可以通过 struct 模块将我们要发送的数据长度打包成一个固定长度的 bytes 然后发送过去. 这样接收方就只需要接收定长的 bytes 然后反解出要接收数据的长度就解决了粘包问题</p>
+<p><img src="https://i.loli.net/2019/07/25/5d3946e356e5c90599.png" alt="WeChat41e3568f4d2050258724a2636b60e1fe.png"></p>
+<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><h3 id="初版解决方案"><a href="#初版解决方案" class="headerlink" title="初版解决方案"></a>初版解决方案</h3><h4 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 服务端</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建服务端套接字对象</span></span><br><span class="line">server = socket(AF_INET, SOCK_STREAM)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绑定ip和端口号</span></span><br><span class="line">server.bind((<span class="string">'127.0.0.1'</span>, <span class="number">8080</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入监听状态</span></span><br><span class="line">server.listen(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 循环接收客户端连接请求</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    conn, client_addr = server.accept()  <span class="comment"># 连接对象, 客户端的ip和端口</span></span><br><span class="line">    print(client_addr)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 循环与客户端进行通讯</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            cmd = conn.recv(<span class="number">1024</span>)</span><br><span class="line">            obj = subprocess.Popen(cmd.decode(<span class="string">'utf-8'</span>),</span><br><span class="line">                                   shell=<span class="literal">True</span>,</span><br><span class="line">                                   stdout=subprocess.PIPE,</span><br><span class="line">                                   stderr=subprocess.PIPE</span><br><span class="line">                                   )</span><br><span class="line">            stdout = obj.stdout.read()</span><br><span class="line">            stderr = obj.stderr.read()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 1、制作固定长度的报头</span></span><br><span class="line">            total_size = len(stdout) + len(stderr)</span><br><span class="line">            header = struct.pack(<span class="string">'i'</span>, total_size)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 2、发送报头</span></span><br><span class="line">            conn.send(header)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 3、发送真实的数据</span></span><br><span class="line">            conn.send(stdout)</span><br><span class="line">            conn.send(stderr)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">except</span> ConnectionResetError:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">            </span><br><span class="line">	<span class="comment"># 回收资源</span></span><br><span class="line">    conn.close()</span><br><span class="line">    </span><br><span class="line">server.close()</span><br></pre></td></tr></table></figure>
+
+<h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 客户端</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建客户端套接字对象</span></span><br><span class="line">client = socket(AF_INET, SOCK_STREAM)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 连接服务端ip和端口号</span></span><br><span class="line">client.connect((<span class="string">'127.0.0.1'</span>, <span class="number">8080</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 循环与服务端进行通讯</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    cmd = input(<span class="string">'&gt;&gt;&gt;: '</span>).strip()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> cmd: <span class="keyword">continue</span></span><br><span class="line">    </span><br><span class="line">    client.send(cmd.encode(<span class="string">'utf-8'</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 1、先收固定长度的报头</span></span><br><span class="line">    header = client.recv(<span class="number">4</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2、解析报头</span></span><br><span class="line">    total_size = struct.unpack(<span class="string">'i'</span>, header)[<span class="number">0</span>]</span><br><span class="line">    print(total_size)  <span class="comment"># 1025</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 3、根据报头内的信息，收取真实的数据</span></span><br><span class="line">    recv_size = <span class="number">0</span></span><br><span class="line">    res = <span class="string">b''</span></span><br><span class="line">    <span class="keyword">while</span> recv_size &lt; total_size:</span><br><span class="line">        recv_data = client.recv(<span class="number">1024</span>)</span><br><span class="line">        res += recv_data</span><br><span class="line">        recv_size += len(recv_data)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 这里用 gbk 解码的原因: subprocess 模块是将命令在 cmd 中执行</span></span><br><span class="line">	<span class="comment"># windows 的 cmd 中, 默认字符编码为 gbk, 所以应该用 gbk 解码</span></span><br><span class="line">    print(res.decode(<span class="string">'gbk'</span>))</span><br><span class="line">    </span><br><span class="line">client.close()</span><br></pre></td></tr></table></figure>
+
+<p>至此, 粘包问题确实解决了, 但是解决的不够完美, 我们只发送了数据长度, 让接收方知道该接收多少数据, 那么我们是不是可以把对数据的描述信息等一起发送过去呢?</p>
+<h3 id="进阶版解决方案"><a href="#进阶版解决方案" class="headerlink" title="进阶版解决方案"></a>进阶版解决方案</h3><h4 id="服务端-1"><a href="#服务端-1" class="headerlink" title="服务端"></a>服务端</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 服务端</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">server = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">server.bind((<span class="string">'127.0.0.1'</span>, <span class="number">8080</span>))</span><br><span class="line">server.listen(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    conn, client_addr = server.accept()  <span class="comment"># 连接对象, 客户端的ip和端口</span></span><br><span class="line">    print(client_addr)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            cmd = conn.recv(<span class="number">1024</span>)</span><br><span class="line">            obj = subprocess.Popen(cmd.decode(<span class="string">'utf-8'</span>),</span><br><span class="line">                                   shell=<span class="literal">True</span>,</span><br><span class="line">                                   stdout=subprocess.PIPE,</span><br><span class="line">                                   stderr=subprocess.PIPE</span><br><span class="line">                                   )</span><br><span class="line">            stdout = obj.stdout.read()</span><br><span class="line">            stderr = obj.stderr.read()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 1、制作报头</span></span><br><span class="line">            header_dic = &#123;</span><br><span class="line">                <span class="string">'total_size'</span>: len(stdout) + len(stderr),</span><br><span class="line">                <span class="string">'md5'</span>: <span class="string">'123svsaef123sdfasdf'</span>,</span><br><span class="line">                <span class="string">'filename'</span>: <span class="string">'a.txt'</span></span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 将字典形式的报头转换为字符串形式</span></span><br><span class="line">            header_json = json.dumps(header_dic)</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 将字符串形式的报头转换成bytes格式</span></span><br><span class="line">            header_bytes = header_json.encode(<span class="string">'utf-8'</span>)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 2、先发送报头的长度</span></span><br><span class="line">            <span class="comment"># 获取bytes格式报头的长度</span></span><br><span class="line">            header_size = len(header_bytes)</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 将长度打包成固定长度发送过去</span></span><br><span class="line">            conn.send(struct.pack(<span class="string">'i'</span>, header_size))</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 3、发送报头</span></span><br><span class="line">            conn.send(header_bytes)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 4、发送真实的数据</span></span><br><span class="line">            conn.send(stdout)</span><br><span class="line">            conn.send(stderr)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">except</span> ConnectionResetError:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    conn.close()</span><br><span class="line">server.close()</span><br></pre></td></tr></table></figure>
+
+<h4 id="客户端-1"><a href="#客户端-1" class="headerlink" title="客户端"></a>客户端</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 客户端</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">client = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">client.connect((<span class="string">'127.0.0.1'</span>, <span class="number">8080</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    cmd = input(<span class="string">'&gt;&gt;&gt;: '</span>).strip()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> cmd: <span class="keyword">continue</span></span><br><span class="line">    </span><br><span class="line">    client.send(cmd.encode(<span class="string">'utf-8'</span>))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 1、先收报头的长度</span></span><br><span class="line">    header_size = struct.unpack(<span class="string">'i'</span>, client.recv(<span class="number">4</span>))[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2、接收报头</span></span><br><span class="line">    header_bytes = client.recv(header_size)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3、解析报头</span></span><br><span class="line">    <span class="comment"># 将bytes类型的报头转换为json字符串形式</span></span><br><span class="line">    header_json = header_bytes.decode(<span class="string">'utf-8'</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 将json字符串形式的报头转为字典形式</span></span><br><span class="line">    header_dic = json.loads(header_json)</span><br><span class="line">    total_size = header_dic[<span class="string">'total_size'</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 4、根据报头内的信息，收取真实的数据</span></span><br><span class="line">    recv_size = <span class="number">0</span></span><br><span class="line">    res = <span class="string">b''</span></span><br><span class="line">    <span class="keyword">while</span> recv_size &lt; total_size:</span><br><span class="line">        recv_data = client.recv(<span class="number">1024</span>)</span><br><span class="line">        res += recv_data</span><br><span class="line">        recv_size += len(recv_data)</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 这里用 gbk 解码的原因: subprocess 模块是将命令在 cmd 中执行</span></span><br><span class="line">	<span class="comment"># windows 的 cmd 中, 默认字符编码为 gbk, 所以应该用 gbk 解码</span></span><br><span class="line">    print(res.decode(<span class="string">'gbk'</span>))</span><br><span class="line">    </span><br><span class="line">client.close()</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+    
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持干货分享, 您的支持将鼓励我持续创作!</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="Catalog Spri 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/uploads/alipay.jpg" alt="Catalog Spri 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Catalog Spri
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://catalogtiann.github.io/2017/02/18/基于TCP协议产生的粘包问题及解决办法/" title="基于TCP协议产生的粘包问题及解决办法">http://catalogtiann.github.io/2017/02/18/基于TCP协议产生的粘包问题及解决办法/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/粘包问题/" rel="tag"># 粘包问题</a>
+          
+            <a href="/tags/socket/" rel="tag"># socket</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/28/Python虚拟环境的作用及搭建方法/" rel="next" title="Python虚拟环境的作用及搭建方法">
+                <i class="fa fa-chevron-left"></i> Python虚拟环境的作用及搭建方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/14/Python实现SMTP发送邮件/" rel="prev" title="Python通过SMTP实现邮件发送">
+                Python通过SMTP实现邮件发送 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+<div onclick="showGitment()" id="gitment_title" class="gitment_title">显示 Gitment 评论</div>
+  <div id="container" style="display:none"></div>
+  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+  <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+  <script>
+  const myTheme = {
+    render(state, instance) {
+      const container = document.createElement('div');
+      container.lang = "en-US";
+      container.className = 'gitment-container gitment-root-container';
+      container.appendChild(instance.renderHeader(state, instance));
+      container.appendChild(instance.renderEditor(state, instance));
+      container.appendChild(instance.renderComments(state, instance));
+      container.appendChild(instance.renderFooter(state, instance));
+      return container;
+    }
+  }
+  function showGitment() {
+    $("#gitment_title").attr("style", "display:none");
+    $("#container").attr("style", "").addClass("gitment_container");
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      theme: myTheme,
+      owner: '',
+      repo: '',
+      oauth: {
+        client_id: '',
+        client_secret: ''
+      }
+    });
+    gitment.render('container');
+  }
+  </script>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="Catalog Spri">
+            
+              <p class="site-author-name" itemprop="name">Catalog Spri</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">61</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/CatalogTiann" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:renyachunchun@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#协议简要介绍"><span class="nav-number">1.</span> <span class="nav-text">协议简要介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#产生粘包的原因"><span class="nav-number">2.</span> <span class="nav-text">产生粘包的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#有两种情况会发生粘包问题"><span class="nav-number">2.1.</span> <span class="nav-text">有两种情况会发生粘包问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决粘包问题"><span class="nav-number">3.</span> <span class="nav-text">解决粘包问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码示例"><span class="nav-number">4.</span> <span class="nav-text">代码示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初版解决方案"><span class="nav-number">4.1.</span> <span class="nav-text">初版解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端"><span class="nav-number">4.1.1.</span> <span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端"><span class="nav-number">4.1.2.</span> <span class="nav-text">客户端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进阶版解决方案"><span class="nav-number">4.2.</span> <span class="nav-text">进阶版解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">客户端</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+
+<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+<div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div id="myCanvasContainer" class="widget tagcloud">
+        <canvas width="250" height="250" id="resCanvas" style="width=100%">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/">Django</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django-1-11/">Django 1.11</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django-2-x/">Django 2.x</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/">NoSQL</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python发邮件/">Python发邮件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python虚拟环境/">Python虚拟环境</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ持久化/">RabbitMQ持久化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-优缺点/">Redis 优缺点</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-特性/">Redis 特性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-Server/">Redis-Server</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis-cli/">Redis-cli</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis的安装/">Redis的安装</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Request-Header/">Request Header</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SMTP/">SMTP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SMTP协议/">SMTP协议</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spider/">Spider</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/User-Agent/">User-Agent</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/collectiions模块/">collectiions模块</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/copy/">copy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/deepcopy/">deepcopy</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/deque/">deque</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greedy-algorithm/">greedy algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/http请求头/">http请求头</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/smtplib/">smtplib</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socket/">socket</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/virtualenv/">virtualenv</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web框架/">web框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/人民币问题/">人民币问题</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/停止Redis/">停止Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分治思想/">分治思想</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分糖果问题/">分糖果问题</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/别踩白块/">别踩白块</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端小游戏/">前端小游戏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原生js/">原生js</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/双端队列/">双端队列</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动Redis/">启动Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开关灯小游戏/">开关灯小游戏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快排/">快排</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/快速排序/">快速排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/校花网/">校花网</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息分发/">消息分发</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息队列/">消息队列</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/深浅拷贝/">深浅拷贝</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/爬校花网/">爬校花网</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/爬虫/">爬虫</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/粘包问题/">粘包问题</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存一致性/">缓存一致性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存击穿/">缓存击穿</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存失效/">缓存失效</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存淘汰/">缓存淘汰</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存雪崩/">缓存雪崩</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟环境/">虚拟环境</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/贪心算法/">贪心算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/选字游戏/">选字游戏</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/队列/">队列</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/非关系型数据库/">非关系型数据库</a><span class="tag-list-count">2</span></li></ul>
+        </canvas>
+    </div>
+</div>
+
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Catalog Spri</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">21.4k</span>
+  
+</div>
+<!-- 
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+-->
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共21.4k字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
+</html>
+
+
+
+
++ <!-- 页面点击小红心 -->
++ <script type="text/javascript" src="/js/src/love.js"></script>
+
